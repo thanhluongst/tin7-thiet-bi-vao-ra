@@ -3,5 +3,5 @@
    API_URL: "https://script.google.com/macros/s/AKfycb.../exec"
    Để trống thì trang chạy chế độ thử (dữ liệu chỉ nằm trong trình duyệt của máy đang dùng). */
 window.APP_CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbyyngRWphYF97uXksHBOl6NM6TMiIMaY3XaYGZ1BOMoMK1OmNgVYQ78Hl_VAQrktD1F/exec"
+  API_URL: "https://script.google.com/macros/s/AKfycbz3CXNPFzY9cneLuR3Qr_dncaQajG-0yW6rVWtWY8H3ZXd-_lY3gi0GU-JBaGvqgI32/exec"
 };
