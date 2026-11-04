@@ -201,7 +201,7 @@ function updateModeUI(){
     local: T ? "Chế độ giáo viên trên máy này: chọn nhóm để ghi câu trả lời khi nhóm báo cáo, xem bảng Theo dõi lớp, rồi chốt kiến thức." : "Bài làm được lưu trên máy này. Nhiều nhóm có thể dùng chung máy: chọn đúng nhóm trước khi làm.",
     online: "Bài làm của em được gửi cho thầy cô. Phần chốt hiện ra khi thầy cô chốt." + (window.API && API.demo ? " (Chế độ thử: chưa nối Google Sheets.)" : "")
   };
-  $("join-box").hidden = mode !== "local" || T;
+  $("join-box").hidden = mode !== "local" || T || API.demo;   // chưa nối Google Sheets: chỉ dùng chế độ một máy
   $("join-info").hidden = mode !== "online";
   $("join-code").textContent = S.session || "";
   $("mode-pill").textContent = T ? "Giáo viên" : "Học sinh";
@@ -389,7 +389,14 @@ $("leave").addEventListener("click", leaveSession);
 const qBuoi = API.normSession(new URLSearchParams(location.search).get("buoi") || "");
 if (qBuoi) $("buoi").value = qBuoi;
 
+if (API.demo) {
+  const lead = document.querySelector("header .lead");
+  if (lead) lead.innerHTML = "Chọn đúng <b>nhóm</b> của em, quan sát hình, trả lời từng câu hỏi trong sách giáo khoa rồi bấm <b>Nộp câu trả lời</b>. Sau khi các nhóm trình bày, thầy cô nhận xét và <b>chốt kiến thức</b>.";
+}
 renderAll();
-if (S.session && String(S.active).indexOf("on:") === 0) { $("buoi").value = S.session; goOnline(); }
-else if (qBuoi) setSync("Nhập tên nhóm rồi bấm Vào buổi học.");
+if (S.session && String(S.active).indexOf("on:") === 0) {
+  if (API.demo) leaveSession();
+  else { $("buoi").value = S.session; goOnline(); }
+}
+else if (qBuoi && !API.demo) setSync("Nhập tên nhóm rồi bấm Vào buổi học.");
 })();

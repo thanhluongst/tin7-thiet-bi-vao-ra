@@ -3,8 +3,12 @@
 Trang học tương tác theo **nghiên cứu bài học**. Học sinh trả lời từng câu hỏi trong SGK (Kết nối tri thức với cuộc sống). Giáo viên theo dõi câu trả lời của các nhóm theo thời gian thực rồi chốt kiến thức cho cả lớp.
 
 - **Trang học sinh:** `index.html`. Học sinh không cần tài khoản.
-- **Trang giáo viên:** `giaovien.html`. Cần mã giáo viên.
-- **Nơi lưu bài:** một Google Sheet của giáo viên, qua Google Apps Script (miễn phí).
+- **Trang giáo viên:** `giaovien.html`. Cần mã giáo viên, chỉ dùng khi đã nối Google Sheets.
+- **Nơi lưu bài:**
+  - mặc định: trình duyệt của máy đang dùng (Cách 1);
+  - hoặc Google Sheet của giáo viên qua Google Apps Script, miễn phí (Cách 2).
+
+**Trang trực tuyến:** https://thanhluongst.github.io/tin7-thiet-bi-vao-ra/
 
 ```
 Học sinh (index.html) ──gửi bài──▶ Apps Script ──▶ Google Sheet "BaiLam"
@@ -24,13 +28,26 @@ Giáo viên ──chốt──▶ Apps Script ──▶ trang học sinh tự hi
 | `hinh/` | Hình 1.1–1.5 cắt từ SGK |
 | `apps-script/Code.gs` | Mã dán vào Google Apps Script |
 
-## Bước 0. Thử ngay trên máy, chưa cần Google Sheets
+## Cách 1. Dùng ngay, không cần Google Sheets (đang dùng)
 
-Khi `API_URL` trong `config.js` còn trống, trang chạy **chế độ thử**: dữ liệu chỉ nằm trong trình duyệt của máy đang dùng.
+Khi `API_URL` trong `config.js` để trống, trang chạy **chế độ một máy nhiều nhóm**. Không cần mạng sau khi trang đã tải, cũng không cần tài khoản.
 
-1. Mở `giaovien.html`, nhập mã giáo viên thử `tin7`, bấm **Tạo mã mới** rồi **Mở buổi học**.
-2. Mở `index.html` trong một tab khác (cùng trình duyệt). Nhập tên nhóm và mã buổi học, bấm **Vào buổi học**, trả lời vài câu và bấm **Nộp**.
-3. Quay lại tab giáo viên: sau tối đa 8 giây, bài của nhóm hiện ra. Bấm **Chốt** một câu, rồi xem tab học sinh hiện phần chốt.
+1. Mở trang học trên **máy trình chiếu**, nhập mã giáo viên `tin7` và bấm **Vào chế độ GV**.
+2. Khi một nhóm báo cáo, bấm tên nhóm ở đầu trang (Nhóm 1, Nhóm 2, …), ghi câu trả lời của nhóm rồi bấm **Nộp**. Bấm **+ Thêm nhóm** nếu lớp có hơn 8 nhóm (tối đa 20).
+3. Mục **Theo dõi lớp** so sánh câu trả lời của các nhóm theo từng câu. Mỗi nhóm có ô nhận xét riêng của giáo viên.
+4. Bấm **GV nhận xét & chốt** ở từng câu, hoặc **Chốt tất cả**.
+5. Sang lớp khác: **Làm lại từ đầu → Xoá bài của tất cả nhóm**.
+
+**Lưu ý:**
+- Bài làm chỉ lưu trong trình duyệt của máy đó. Hãy dùng cùng một máy và cùng một trình duyệt suốt buổi.
+- Không mở bằng cửa sổ ẩn danh.
+- Không xoá dữ liệu trình duyệt trước khi xong buổi suy ngẫm.
+
+Học sinh vẫn có thể mở trang trên máy riêng để làm bài, nhưng bài chỉ lưu trên máy của các em. Phần chốt chỉ hiện khi giáo viên nhập mã trên chính máy đó.
+
+## Cách 2. Học sinh gửi bài về cho giáo viên (cần Google Sheets)
+
+Làm theo Bước 1 bên dưới. Khi `config.js` đã có `API_URL`, trang học sinh hiện thêm ô **Mã buổi học**, và trang giáo viên dùng để mở buổi học, chiếu mã QR, theo dõi và chốt cho cả lớp.
 
 ## Bước 1. Tạo Google Sheet và Apps Script (khoảng 10 phút)
 

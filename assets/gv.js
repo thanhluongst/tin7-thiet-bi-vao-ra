@@ -160,5 +160,26 @@ function renderRev(){
   });
 }
 
-if (PIN && BUOI) start();
+/* Chưa nối Google Sheets: không có buổi học trực tuyến, hướng dẫn dùng chế độ một máy */
+if (API.demo) {
+  $("conn-text").textContent = "Chưa nối Google Sheets: dùng chế độ một máy nhiều nhóm.";
+  const lead = document.querySelector("header .lead");
+  if (lead) lead.textContent = "Hướng dẫn dạy bài này trên một máy trình chiếu, ghi câu trả lời theo từng nhóm và chốt kiến thức.";
+  const sec = $("dang-nhap");
+  sec.innerHTML = "";
+  sec.appendChild(el("div", {class:"part-head"}, "<h2>Dạy trên một máy (không cần mạng, không cần tài khoản)</h2>"));
+  const box = el("div", {class:"act"});
+  box.innerHTML =
+    "<ol style=\"margin:0;padding-left:20px;display:grid;gap:6px\">" +
+    "<li>Trên máy trình chiếu, mở <a href=\"index.html\">trang học</a>.</li>" +
+    "<li>Nhập mã giáo viên <b>tin7</b> rồi bấm <b>Vào chế độ GV</b>.</li>" +
+    "<li>Khi một nhóm báo cáo, bấm tên nhóm ở đầu trang (Nhóm 1, Nhóm 2, …) rồi ghi câu trả lời của nhóm và bấm <b>Nộp</b>.</li>" +
+    "<li>Mục <b>Theo dõi lớp</b> trên trang học so sánh câu trả lời của các nhóm theo từng câu.</li>" +
+    "<li>Bấm <b>GV nhận xét &amp; chốt</b> ở từng câu, hoặc <b>Chốt tất cả</b>.</li>" +
+    "<li>Sang lớp khác: <b>Làm lại từ đầu → Xoá bài của tất cả nhóm</b>.</li></ol>" +
+    "<p class=\"status\" style=\"margin-top:10px\">Bài làm chỉ lưu trong trình duyệt của máy đó. Muốn học sinh làm trên máy riêng và gửi bài về cho thầy cô, cần nối Google Sheets (xem README).</p>" +
+    "<div class=\"row\" style=\"margin-top:6px\"><a class=\"btn primary\" href=\"index.html\" style=\"text-decoration:none\">Mở trang học</a></div>";
+  sec.appendChild(box);
+  sec.hidden = false; $("app").hidden = true;
+} else if (PIN && BUOI) start();
 })();
