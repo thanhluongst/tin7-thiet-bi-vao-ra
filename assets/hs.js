@@ -420,7 +420,7 @@ if (API.demo) {
   if (lead) lead.innerHTML = "Chọn đúng <b>nhóm</b> của em, quan sát hình, trả lời từng câu hỏi trong sách giáo khoa rồi bấm <b>Nộp câu trả lời</b>. Sau khi các nhóm trình bày, thầy cô nhận xét và <b>chốt kiến thức</b>.";
 }
 outline = window.Outline.mount({
-  root: document.querySelector("main"), aside: $("outline"),
+  root: document.querySelector("main"), aside: $("outline"), pagerHost: document.querySelector("main .wrap"), storeKey: "focus-hs",
   progress: a => ({done: a.tasks.filter(t => S.sub[t]).length, total: a.tasks.length}),
   chot: a => a.tasks.every(t => isRev(t))
 });

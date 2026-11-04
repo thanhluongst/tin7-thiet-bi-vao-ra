@@ -302,3 +302,16 @@ table.mx{border-collapse:separate;border-spacing:3px;font-size:12px}
 .mx td.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
 .mx td.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
 .mx td:hover{outline:2px solid var(--fg)}
+/* ===== Chỉ hiện phần được chọn ===== */
+.f-hide{display:none!important}
+.ol-all{width:100%;margin-top:10px;justify-content:center}
+.ol-acts li.sel{background:var(--accent);}
+.ol-acts li.sel a,.ol-acts li.sel .sn,.ol-acts li.sel .cnt{color:var(--accent-ink)}
+.ol-acts li.sel .bar{background:color-mix(in srgb,var(--accent-ink) 30%,transparent)}
+.ol-stage.sel > .ol-st{background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:2px 8px}
+.ol-stage.sel > .ol-st .sn{color:var(--accent-ink)}
+nav.toc a.sel{background:var(--accent);color:var(--accent-ink)}
+nav.toc a.sel .sn{color:var(--accent-ink)}
+.pager{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:14px 0;border-top:2px solid var(--accent)}
+.pager .status{flex:1 1 200px;text-align:center}
+.pager .btn{max-width:100%;white-space:normal;text-align:left}

@@ -108,6 +108,15 @@ Bài học chia theo 4 bước của kế hoạch bài dạy. Mỗi hoạt độ
 - Thanh cho biết hoạt động đang xem, số câu đã nộp của từng hoạt động và hoạt động nào đã được chốt.
 - Ở trang giáo viên, con số là số lượt nộp của cả lớp.
 
+**Chỉ hiện phần đang học:**
+- Bấm một mục trong thanh Tiến trình (hoặc trên thanh mục lục đầu trang) thì cột bên phải **chỉ hiện phần đó**:
+  - bấm tên bước, ví dụ "2.1 Thiết bị vào – ra", thì hiện cả bước;
+  - bấm một hoạt động, ví dụ "2.1.2", thì chỉ hiện hoạt động đó.
+- Cuối phần đang xem có nút **← Trước / Tiếp →** để chuyển phần.
+- Nút **Hiện toàn bộ bài** đưa trang về hiển thị toàn bộ.
+- Trang giáo viên có thêm mục *Mã QR* và *Tiến độ các nhóm* trong thanh Tiến trình. Bấm một ô trong bảng màu thì trang tự mở đúng hoạt động chứa câu đó.
+- Trang nhớ phần đang xem khi tải lại.
+
 **Màu câu trả lời** (dùng chung cho học sinh và giáo viên):
 
 | Màu | Nghĩa |

@@ -59,7 +59,8 @@ async function start(){
   await loadLesson();
   $("outline").hidden = false;
   if (!outline && lessonReady) outline = window.Outline.mount({
-    root: $("lesson"), aside: $("outline"), title: "Tiến trình lớp học",
+    root: $("lesson"), aside: $("outline"), title: "Tiến trình lớp học", pagerHost: $("app"), storeKey: "focus-gv",
+    extras: [{id: "chia-se", code: "QR", title: "Mã QR, link cho học sinh"}, {id: "tien-do", code: "▦", title: "Tiến độ các nhóm"}],
     progress: a => { const n = DOCS.length, total = n * a.tasks.length;
       const done = DOCS.reduce((s, d) => s + a.tasks.filter(t => d.sub && d.sub[t]).length, 0);
       return {done, total, label: n ? done + "/" + total : "–"}; },
@@ -311,6 +312,7 @@ function renderMatrix(){
 $("mx").addEventListener("click", e => {
   const td = e.target.closest("td[data-t]"); if (!td) return;
   $("filter").value = td.getAttribute("data-cid"); renderAll();
+  if (outline) outline.focusTask(td.getAttribute("data-t"));
   const q = document.querySelector('#lesson [data-task="' + td.getAttribute("data-t") + '"]');
   if (q) q.scrollIntoView({behavior: "smooth", block: "start"});
 });
@@ -318,7 +320,7 @@ $("mx").addEventListener("click", e => {
 $("dash-rows").addEventListener("click", e => {
   const b = e.target.closest("[data-view]"); if (!b) return;
   $("filter").value = b.getAttribute("data-view"); renderAll();
-  const first = document.getElementById("mo-dau"); if (first) first.scrollIntoView({behavior: "smooth"});
+  if (outline) outline.show({type: "stage", id: "mo-dau"});
 });
 
 function renderFilter(){
