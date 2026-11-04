@@ -44,7 +44,8 @@ const classDocs = [];
 if (!S.clientId) S.clientId = "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 
 function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
-function changed(){ S.t = Date.now(); saveLocal(); if (myWriter && mode === "online") myWriter.queue(); updateProgress(); if (dashOn()) { renderDash(); renderGroups(); } }
+let rafPending = false;
+function changed(){ if (!rafPending) { rafPending = true; requestAnimationFrame(() => { rafPending = false; renderAll(); }); } S.t = Date.now(); saveLocal(); if (myWriter && mode === "online") myWriter.queue(); updateProgress(); if (dashOn()) { renderDash(); renderGroups(); } }
 const dashOn = () => mode === "local" && !!S.teacher;
 const isTeacher = () => mode === "local" && !!S.teacher;
 const isRev = id => (mode === "local" ? !!S.rev[id] : !!REV[id]);
@@ -124,7 +125,7 @@ const BODY = {
     if (!Array.isArray(S.order[id]) || S.order[id].length !== t.start.length) S.order[id] = t.start.slice();
     const ol = el("ol", {class:"order"});
     function move(i, dir){ const a = S.order[id].slice(), j = i + dir; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; S.order[id] = a; changed(); renderAll(); }
-    return {node: ol, has: () => true, render(sub, rev){
+    return {node: ol, has: () => !!S.sub[id] || (Array.isArray(S.order[id]) && S.order[id].join() !== t.start.join()), render(sub, rev){
       if (!Array.isArray(S.order[id]) || S.order[id].length !== t.start.length) S.order[id] = t.start.slice();
       const a = S.order[id]; ol.innerHTML = "";
       a.forEach((k, i) => { const ok = k === t.ans[i];
@@ -142,7 +143,10 @@ const syncers = [];
 document.querySelectorAll("[data-task]").forEach(slot => {
   const id = slot.dataset.task, t = TASKS[id];
   slot.className = "q";
-  slot.appendChild(el("p", {class:"q-text"}, (slot.dataset.n ? '<span class="n">' + slot.dataset.n + '.</span>' : "") + esc(t.q)));
+  const pill = el("span", {class:"pill-state"});
+  const qt = el("p", {class:"q-text"}, (slot.dataset.n ? '<span class="n">' + slot.dataset.n + '.</span>' : "") + esc(t.q));
+  qt.insertBefore(pill, qt.firstChild);
+  slot.appendChild(qt);
   const body = BODY[t.type](id, t);
   slot.appendChild(body.node);
   if (body.sync) syncers.push(body.sync);
@@ -178,6 +182,11 @@ document.querySelectorAll("[data-task]").forEach(slot => {
     const nx = mode === "online" ? (NX[id] || "") : "";
     fbText.textContent = nx; fb.hidden = !nx;
     liked.hidden = !(mode === "online" && NX["like." + id]);
+    /* màu trạng thái: chưa làm / đang làm / đã nộp / đúng / cần sửa */
+    const gg = rev ? grade(id, S) : null;
+    const state = !body.has() ? "empty" : !sub ? "draft" : gg ? (gg.ok ? "right" : "wrong") : "sub";
+    slot.dataset.state = state;
+    pill.textContent = {empty: "Chưa làm", draft: "Chưa nộp", sub: rev ? "Đã nộp" : "Đã nộp, chờ chốt", right: "Đúng", wrong: "Cần sửa"}[state];
   }
   bSub.addEventListener("click", () => {
     if (!S.sub[id] && !body.has()) { err = "Em hãy trả lời trước khi nộp."; render(); return; }
@@ -241,7 +250,8 @@ function renderGroups(){
     box.appendChild(add);
   }
 }
-function renderAll(){ renders.forEach(r => r()); updateProgress(); updateModeUI(); renderGroups(); if (dashOn()) renderDash(); }
+let outline = null;
+function renderAll(){ renders.forEach(r => r()); updateProgress(); updateModeUI(); renderGroups(); if (dashOn()) renderDash(); if (outline) outline.update(); }
 
 /* tên */
 const nm = $("hs-name");
@@ -409,6 +419,11 @@ if (API.demo) {
   const lead = document.querySelector("header .lead");
   if (lead) lead.innerHTML = "Chọn đúng <b>nhóm</b> của em, quan sát hình, trả lời từng câu hỏi trong sách giáo khoa rồi bấm <b>Nộp câu trả lời</b>. Sau khi các nhóm trình bày, thầy cô nhận xét và <b>chốt kiến thức</b>.";
 }
+outline = window.Outline.mount({
+  root: document.querySelector("main"), aside: $("outline"),
+  progress: a => ({done: a.tasks.filter(t => S.sub[t]).length, total: a.tasks.length}),
+  chot: a => a.tasks.every(t => isRev(t))
+});
 renderAll();
 if (S.session && String(S.active).indexOf("on:") === 0) {
   if (API.demo) leaveSession();

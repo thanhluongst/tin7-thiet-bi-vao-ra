@@ -57,11 +57,19 @@ async function start(){
   } else qr.hidden = true;
   DOCS = []; $("filter").value = "";
   await loadLesson();
+  $("outline").hidden = false;
+  if (!outline && lessonReady) outline = window.Outline.mount({
+    root: $("lesson"), aside: $("outline"), title: "Tiến trình lớp học",
+    progress: a => { const n = DOCS.length, total = n * a.tasks.length;
+      const done = DOCS.reduce((s, d) => s + a.tasks.filter(t => d.sub && d.sub[t]).length, 0);
+      return {done, total, label: n ? done + "/" + total : "–"}; },
+    chot: a => a.tasks.every(t => REV[t])
+  });
   try { REV = await API.getReveal(BAI, BUOI); } catch(e) { setSync("Chưa tải được phần chốt: " + e.message); }
   renderAll();
   poll();
 }
-function stop(){ clearTimeout(pollTimer); $("app").hidden = true; $("gv-nav").hidden = true; $("dang-nhap").hidden = false; }
+function stop(){ clearTimeout(pollTimer); $("outline").hidden = true; $("app").hidden = true; $("gv-nav").hidden = true; $("dang-nhap").hidden = false; }
 $("switch").addEventListener("click", () => { stop(); $("buoi").value = ""; $("buoi").focus(); });
 $("logout").addEventListener("click", () => { stop(); PIN = ""; ss("gv-pin", null); });
 $("copy").addEventListener("click", async () => {
@@ -130,7 +138,10 @@ function answerOf(id, d){
   let body = "", chip = sub ? '<span class="chip sub">Đã nộp</span>' : '<span class="chip draft">Đang làm</span>', ok = null;
   if (t.type === "open") body = esc((d.ans && d.ans[id]) || "");
   else { const g = grade(id, d); if (g) { body = esc(g.text); if (sub) { ok = g.ok; chip += g.ok ? ' <span class="chip ok">Đúng</span>' : ' <span class="chip bad">Chưa đúng</span>'; } } }
-  return {body, chip, sub, ok};
+  const state = !body ? "empty" : !sub ? "draft" : ok === true ? "right" : ok === false ? "wrong" : "sub";
+  if (state === "draft") chip = '<span class="chip warn">Đang làm, chưa nộp</span>';
+  if (state === "sub") chip = '<span class="chip info">Đã nộp</span>';
+  return {body, chip, sub, ok, state};
 }
 
 function makeItem(id, d){
@@ -243,6 +254,7 @@ function renderPanel(id){
     it.like.innerHTML = THUMB + (liked ? "Đã khen" : "Khen");
     it.like.setAttribute("aria-pressed", liked ? "true" : "false");
     it.like.classList.toggle("suggest", !liked && a.ok === true);
+    it.item.dataset.state = a.state; it.item.classList.toggle("liked", liked);
     renderChips(it, suggestions(id, d, a));
     it.txt.innerHTML = a.body || '<span class="empty">Chưa trả lời</span>';
     if (!it.dirty && document.activeElement !== it.ta) it.ta.value = nx;
@@ -267,6 +279,7 @@ function renderConcepts(){
 
 function timeAgo(t){ if (!t) return "—"; const s = Math.round((Date.now() - t) / 1000); if (s < 60) return "vừa xong"; if (s < 3600) return Math.floor(s / 60) + " phút trước"; return new Date(t).toLocaleTimeString("vi-VN", {hour:"2-digit", minute:"2-digit"}); }
 function renderTable(){
+  renderMatrix();
   const tb = $("dash-rows"); tb.innerHTML = "";
   const nSubAll = DOCS.reduce((s, d) => s + countSub(d), 0);
   $("dash-sum").innerHTML = "<span>Số nhóm/học sinh: <b>" + DOCS.length + "</b></span><span>Tổng số câu đã nộp: <b>" + nSubAll + "</b></span>";
@@ -275,6 +288,33 @@ function renderTable(){
     '</td><td class="num">' + nComments(d) + '</td><td class="num">' + nLikes(d) + '</td><td class="num">' + timeAgo(d.t) +
     '</td><td><button class="btn" type="button" data-view="' + esc(d.clientId) + '">Xem bài</button></td>')));
 }
+/* Bảng màu: hàng = nhóm, cột = câu theo tiến trình */
+const MX_COLS = window.LESSON.STAGES.flatMap(st => st.acts.flatMap(a => a.tasks.map((t, i) => ({t, a, st, i}))));
+const MX_SYM = {empty: "", draft: "…", sub: "●", right: "✓", wrong: "✗"};
+const MX_TXT = {empty: "chưa làm", draft: "đang làm, chưa nộp", sub: "đã nộp", right: "đúng", wrong: "cần sửa"};
+function renderMatrix(){
+  const box = $("mx");
+  if (!DOCS.length) { box.innerHTML = ""; return; }
+  const acts = window.LESSON.STAGES.flatMap(st => st.acts);
+  let h = '<table class="mx"><thead><tr><th></th>' + acts.map(a => '<th class="stg" colspan="' + a.tasks.length + '" title="' + esc(a.title) + '">' + a.code + "</th>").join("") + "</tr>";
+  h += "<tr><th></th>" + MX_COLS.map(c => "<th>" + (c.i + 1) + "</th>").join("") + "</tr></thead><tbody>";
+  DOCS.forEach(d => {
+    h += '<tr><th class="grp" title="' + esc(d.name) + '">' + esc(d.name) + "</th>";
+    MX_COLS.forEach(c => {
+      const a = answerOf(c.t, d), liked = d.nx && d.nx["like." + c.t];
+      h += '<td class="' + a.state + '" data-cid="' + esc(d.clientId) + '" data-t="' + c.t + '" title="' + esc(d.name + " · " + c.a.code + " câu " + (c.i + 1) + ": " + MX_TXT[a.state] + (liked ? " · đã khen" : "")) + '">' + (liked ? "★" : MX_SYM[a.state]) + "</td>";
+    });
+    h += "</tr>";
+  });
+  box.innerHTML = h + "</tbody></table>";
+}
+$("mx").addEventListener("click", e => {
+  const td = e.target.closest("td[data-t]"); if (!td) return;
+  $("filter").value = td.getAttribute("data-cid"); renderAll();
+  const q = document.querySelector('#lesson [data-task="' + td.getAttribute("data-t") + '"]');
+  if (q) q.scrollIntoView({behavior: "smooth", block: "start"});
+});
+
 $("dash-rows").addEventListener("click", e => {
   const b = e.target.closest("[data-view]"); if (!b) return;
   $("filter").value = b.getAttribute("data-view"); renderAll();
@@ -289,9 +329,11 @@ function renderFilter(){
 }
 $("filter").addEventListener("change", renderAll);
 
+let outline = null;
 function renderAll(){
   renderTable(); renderFilter();
   TASK_IDS.forEach(renderPanel); renderConcepts();
+  if (outline) outline.update();
 }
 
 /* ================= CẬP NHẬT ĐỊNH KÌ ================= */
@@ -324,8 +366,8 @@ async function pushRev(){
   catch(e) { setSync("Chưa lưu được phần chốt: " + e.message + ". Bấm lại để thử."); }
   saving = false; if (again) { again = false; pushRev(); }
 }
-function toggleRev(id){ REV = Object.assign({}, REV, {[id]: !REV[id]}); TASK_IDS.forEach(renderPanel); renderConcepts(); pushRev(); }
-function setAll(v){ const n = {}; ALL_REV.forEach(k => n[k] = v); REV = n; TASK_IDS.forEach(renderPanel); renderConcepts(); pushRev(); }
+function toggleRev(id){ REV = Object.assign({}, REV, {[id]: !REV[id]}); TASK_IDS.forEach(renderPanel); renderConcepts(); if (outline) outline.update(); pushRev(); }
+function setAll(v){ const n = {}; ALL_REV.forEach(k => n[k] = v); REV = n; TASK_IDS.forEach(renderPanel); renderConcepts(); if (outline) outline.update(); pushRev(); }
 $("rev-all").addEventListener("click", () => setAll(true));
 $("rev-none").addEventListener("click", () => setAll(false));
 

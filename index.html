@@ -6,7 +6,7 @@
 <title>Thiết bị vào – ra · Tin học 7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lexend:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=8">
+<link rel="stylesheet" href="assets/style.css?v=9">
 </head>
 <body>
 <header class="hero">
@@ -68,15 +68,17 @@
 <nav class="toc" aria-label="Mục lục">
   <div class="wrap">
     <a href="#theo-doi" id="toc-dash" hidden>Theo dõi lớp</a>
-    <a href="#mo-dau">Mở đầu</a>
-    <a href="#phan-1">1. Thiết bị vào – ra</a>
-    <a href="#phan-2">2. An toàn thiết bị</a>
-    <a href="#luyen-tap">Luyện tập</a>
-    <a href="#van-dung">Vận dụng</a>
+    <a href="#mo-dau" data-stage="mo-dau"><span class="sn">1</span> Khởi động</a>
+    <a href="#phan-1" data-stage="phan-1"><span class="sn">2.1</span> Thiết bị vào – ra</a>
+    <a href="#phan-2" data-stage="phan-2"><span class="sn">2.2</span> An toàn thiết bị</a>
+    <a href="#luyen-tap" data-stage="luyen-tap"><span class="sn">3</span> Luyện tập</a>
+    <a href="#van-dung" data-stage="van-dung"><span class="sn">4</span> Vận dụng</a>
     <span class="prog" id="prog"></span>
   </div>
 </nav>
 
+<div class="layout">
+<aside class="outline" id="outline" aria-label="Tiến trình bài học"></aside>
 <main>
   <div class="wrap">
 
@@ -97,14 +99,15 @@
     </section>
 
     <section class="part" id="mo-dau">
-      <div class="part-head"><div class="eyebrow">Khởi động</div><h2>Mở đầu</h2></div>
+      <div class="part-head"><div class="eyebrow">Bước 1</div><h2><span class="sn">1</span> Khởi động</h2></div>
       <div class="act">
+        <div class="act-tag"><b>Khởi động</b> Nhớ lại kiến thức lớp 6</div>
         <div data-task="kd1" data-n="1"></div>
       </div>
     </section>
 
     <section class="part" id="phan-1">
-      <div class="part-head"><div class="eyebrow">Phần 1</div><h2>Thiết bị vào – ra</h2></div>
+      <div class="part-head"><div class="eyebrow">Bước 2 · Hình thành kiến thức mới</div><h2><span class="sn">2.1</span> Thiết bị vào – ra</h2></div>
 
       <div class="act">
         <div class="act-tag"><b>Hoạt động 1</b> Thiết bị vào – ra</div>
@@ -149,7 +152,7 @@
     </section>
 
     <section class="part" id="phan-2">
-      <div class="part-head"><div class="eyebrow">Phần 2</div><h2>An toàn thiết bị</h2></div>
+      <div class="part-head"><div class="eyebrow">Bước 2 · Hình thành kiến thức mới</div><h2><span class="sn">2.2</span> An toàn thiết bị</h2></div>
 
       <div class="act">
         <div class="act-tag"><b>Hoạt động 3</b> Kết nối thiết bị vào – ra</div>
@@ -174,16 +177,18 @@
     </section>
 
     <section class="part" id="luyen-tap">
-      <div class="part-head"><div class="eyebrow">Luyện tập</div><h2>Luyện tập</h2></div>
+      <div class="part-head"><div class="eyebrow">Bước 3</div><h2><span class="sn">3</span> Luyện tập</h2></div>
       <div class="act">
+        <div class="act-tag"><b>Luyện tập</b> Bài tập SGK trang 9</div>
         <div data-task="lt1" data-n="1"></div>
         <div data-task="lt2" data-n="2"></div>
       </div>
     </section>
 
     <section class="part" id="van-dung">
-      <div class="part-head"><div class="eyebrow">Vận dụng</div><h2>Vận dụng</h2></div>
+      <div class="part-head"><div class="eyebrow">Bước 4</div><h2><span class="sn">4</span> Vận dụng</h2></div>
       <div class="act">
+        <div class="act-tag"><b>Vận dụng</b> Liên hệ thực tế</div>
         <div data-task="vd1" data-n="1"></div>
         <div data-task="vd2" data-n="2"></div>
         <div data-task="vd3" data-n="3"></div>
@@ -192,11 +197,13 @@
 
   </div>
 </main>
+</div>
 
 <footer class="foot"><div class="wrap">Tin học 7 – Kết nối tri thức với cuộc sống · <a href="giaovien.html">Trang giáo viên</a></div></footer>
-<script src="config.js?v=8"></script>
-<script src="assets/content.js?v=8"></script>
-<script src="assets/api.js?v=8"></script>
-<script src="assets/hs.js?v=8"></script>
+<script src="config.js?v=9"></script>
+<script src="assets/content.js?v=9"></script>
+<script src="assets/outline.js?v=9"></script>
+<script src="assets/api.js?v=9"></script>
+<script src="assets/hs.js?v=9"></script>
 </body>
 </html>

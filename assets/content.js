@@ -169,5 +169,25 @@ function autoComment(id, d){
   }
   return "";
 }
-window.LESSON = {id: "tin7-bai1", title: "Bài 1. Thiết bị vào – ra", TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, summary, esc, NX_MAU, NX_CHUNG, autoComment};
+/* Tiến trình bài học theo 4 bước của kế hoạch bài dạy (CV 5512) */
+const STAGES = [
+  {id:"mo-dau", code:"1", step:"Bước 1", title:"Khởi động", acts:[
+    {title:"Nhớ lại kiến thức lớp 6", tasks:["kd1"]}]},
+  {id:"phan-1", code:"2.1", step:"Bước 2 · Hình thành kiến thức mới", title:"Thiết bị vào – ra", acts:[
+    {title:"Hoạt động 1: Micro và loa", tasks:["h1a","h1b","h1c"], concept:"c1"},
+    {title:"Hoạt động 2: Sự đa dạng của thiết bị", tasks:["h2a","h2b","h2c","h2d"]},
+    {title:"Thảo luận: Xếp thiết bị vào nhóm", tasks:["sortDev"]},
+    {title:"Đọc hiểu: Lưu trữ, xử lí dữ liệu", tasks:["h2e"], concept:"c2"},
+    {title:"Câu hỏi SGK trang 7", tasks:["p7a","p7b"]}]},
+  {id:"phan-2", code:"2.2", step:"Bước 2 · Hình thành kiến thức mới", title:"An toàn thiết bị", acts:[
+    {title:"Hoạt động 3: Kết nối thiết bị", tasks:["h3a","h3b"], concept:"c3"},
+    {title:"Thảo luận: Nên / Không nên", tasks:["sortSafe"], concept:"c4"},
+    {title:"Câu hỏi SGK trang 9", tasks:["p9a","p9b"]}]},
+  {id:"luyen-tap", code:"3", step:"Bước 3", title:"Luyện tập", acts:[
+    {title:"Bài tập SGK trang 9", tasks:["lt1","lt2"]}]},
+  {id:"van-dung", code:"4", step:"Bước 4", title:"Vận dụng", acts:[
+    {title:"Liên hệ thực tế", tasks:["vd1","vd2","vd3"]}]}
+];
+STAGES.forEach(st => st.acts.forEach((a, i) => { a.code = st.acts.length > 1 ? st.code + "." + (i + 1) : st.code; a.id = "hd-" + a.code.replace(/\./g, "-"); }));
+window.LESSON = {STAGES, id: "tin7-bai1", title: "Bài 1. Thiết bị vào – ra", TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, summary, esc, NX_MAU, NX_CHUNG, autoComment};
 })();

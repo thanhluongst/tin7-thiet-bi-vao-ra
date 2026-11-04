@@ -91,6 +91,42 @@ Làm theo Bước 1 bên dưới. Khi `config.js` đã có `API_URL`, trang họ
    - Học sinh: `https://<tên-tài-khoản>.github.io/tin7-thiet-bi-vao-ra/`
    - Giáo viên: `https://<tên-tài-khoản>.github.io/tin7-thiet-bi-vao-ra/giaovien.html`
 
+## Tiến trình bài học và màu sắc
+
+Bài học chia theo 4 bước của kế hoạch bài dạy. Mỗi hoạt động có mã số, hiện trên đầu hoạt động và trong thanh **Tiến trình bài học**:
+
+| Bước | Mã | Hoạt động |
+| --- | --- | --- |
+| 1. Khởi động | 1 | Nhớ lại kiến thức lớp 6 |
+| 2. Hình thành kiến thức mới | 2.1.1 – 2.1.5 | Thiết bị vào – ra: Hoạt động 1, Hoạt động 2, Thảo luận xếp thiết bị, Đọc hiểu, Câu hỏi trang 7 |
+| | 2.2.1 – 2.2.3 | An toàn thiết bị: Hoạt động 3, Thảo luận nên/không nên, Câu hỏi trang 9 |
+| 3. Luyện tập | 3 | Bài tập SGK trang 9 |
+| 4. Vận dụng | 4 | Liên hệ thực tế |
+
+**Thanh Tiến trình bài học:**
+- Trên máy tính, thanh nằm bên trái màn hình. Trên điện thoại, thanh nằm ở đầu trang, bấm vào để mở.
+- Thanh cho biết hoạt động đang xem, số câu đã nộp của từng hoạt động và hoạt động nào đã được chốt.
+- Ở trang giáo viên, con số là số lượt nộp của cả lớp.
+
+**Màu câu trả lời** (dùng chung cho học sinh và giáo viên):
+
+| Màu | Nghĩa |
+| --- | --- |
+| Xám | Chưa làm |
+| Vàng | Đang làm, chưa nộp |
+| Xanh dương | Đã nộp, chờ chốt (câu tự luận) |
+| Xanh lá | Đúng (sau khi giáo viên chốt các câu chấm tự động) |
+| Đỏ | Cần sửa |
+
+Trang giáo viên có thêm **bảng màu tiến độ**: mỗi hàng là một nhóm, mỗi ô là một câu, các ô xếp theo tiến trình. Kí hiệu trong ô:
+- ✓ đúng;
+- ✗ sai;
+- ● đã nộp;
+- … đang làm;
+- ★ đã khen.
+
+Bấm vào một ô để mở bài của nhóm đó ở câu tương ứng.
+
 ## Quy trình trên lớp
 
 1. **Giáo viên** mở `giaovien.html`, nhập mã giáo viên và tạo **mã buổi học** riêng cho từng lớp, từng tiết (ví dụ `7A2-T1`), rồi bấm **Mở buổi học**.
