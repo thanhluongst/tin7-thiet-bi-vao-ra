@@ -100,6 +100,7 @@ Làm theo Bước 1 bên dưới. Khi `config.js` đã có `API_URL`, trang họ
    - bài của từng nhóm, kèm nhãn Đã nộp / Đúng / Chưa đúng;
    - nút xem **Đáp án / phần chốt**;
    - ô **Nhận xét gửi cho nhóm**: gõ nhận xét rồi bấm **Gửi nhận xét** (hoặc Ctrl + Enter). Nhóm đó thấy nhận xét ngay dưới câu trả lời của mình sau 10–15 giây.
+   - nút **Khen** (biểu tượng ngón tay cái): bấm để khen câu trả lời tốt, bấm lần nữa để bỏ. Nút có viền xanh khi câu trắc nghiệm/xếp nhóm của nhóm đó đúng. Học sinh thấy dòng "Thầy cô khen câu trả lời của em!" dưới câu đó.
 
    Ô **Xem bài của** trên thanh mục lục dùng để lọc, chỉ hiện bài của một nhóm. Bảng **Tiến độ các nhóm** cho biết mỗi nhóm đã nộp bao nhiêu câu và đã được nhận xét bao nhiêu câu.
 5. Sau khi các nhóm trình bày, giáo viên bấm **Chốt câu này cho cả lớp**. Trang học sinh tự hiện phần chốt sau 10–15 giây.

@@ -201,3 +201,13 @@ details.key-det .key-inline{margin-top:6px}
 .feedback{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;padding:8px 12px;display:grid;gap:2px}
 .feedback .fl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
 .feedback .ft{white-space:pre-wrap}
+/* Nút khen */
+.ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+.like-btn{display:inline-flex;gap:6px;align-items:center}
+.like-btn.suggest{border-color:var(--ok);color:var(--ok)}
+.like-btn[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--accent-ink)}
+.like-btn[aria-pressed="true"] .ico{fill:currentColor}
+.chip.like{background:var(--ok-soft);color:var(--ok);display:inline-flex;gap:4px;align-items:center}
+.chip.like .ico{width:12px;height:12px;fill:currentColor;vertical-align:0}
+.liked{display:inline-flex;gap:8px;align-items:center;font-weight:700;color:var(--ok);background:var(--ok-soft);border:1px solid var(--ok);border-radius:999px;padding:4px 12px;justify-self:start;font-size:14px}
+.liked .ico{width:18px;height:18px;fill:currentColor}

@@ -12,6 +12,12 @@ const stamp = () => new Date().toLocaleTimeString("vi-VN", {hour:"2-digit", minu
 function setSync(t){ $("sync").textContent = t; }
 
 const ALL_REV = TASK_IDS.concat(Object.keys(CONCEPTS));
+/* Lượt khen lưu chung với nhận xét, khoá "like.<mã câu>" (không cần sửa Code.gs) */
+const LIKE = id => "like." + id;
+const isLikeKey = k => k.indexOf("like.") === 0;
+const nComments = d => Object.keys(d.nx || {}).filter(k => !isLikeKey(k)).length;
+const nLikes = d => Object.keys(d.nx || {}).filter(isLikeKey).length;
+const THUMB = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>';
 let PIN = ss("gv-pin") || "", BUOI = ls("gv-buoi") || "";
 let REV = {}, DOCS = [], pollTimer = null, lessonReady = false;
 
@@ -133,10 +139,12 @@ function makeItem(id, d){
   const ta = el("textarea", {id: taId, rows:"2", placeholder:"Ví dụ: Nhóm đã nêu đúng micro là thiết bị vào; cần giải thích thêm vì sao loa là thiết bị ra."});
   const row = el("div", {class:"row"});
   const send = el("button", {class:"btn", type:"button"}, "Gửi nhận xét");
+  const like = el("button", {class:"btn like-btn", type:"button", "aria-pressed":"false"});
   const st = el("span", {class:"status"});
-  row.append(send, st); fb.append(lab, ta, row);
+  row.append(like, send, st); fb.append(lab, ta, row);
   item.append(head, txt, fb);
-  const it = {item, head, txt, ta, send, st, cid: d.clientId, dirty: false, saving: false};
+  const it = {item, head, txt, ta, send, like, st, cid: d.clientId, dirty: false, saving: false};
+  like.addEventListener("click", () => toggleLike(id, it));
   ta.addEventListener("input", () => { it.dirty = true; st.textContent = "Chưa gửi"; st.className = "status"; });
   ta.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) send.click(); });
   send.addEventListener("click", () => sendComment(id, it));
@@ -156,6 +164,20 @@ async function sendComment(id, it){
   it.saving = false; it.send.disabled = false;
 }
 
+async function toggleLike(id, it){
+  const d = DOCS.find(x => x.clientId === it.cid); if (!d || it.saving) return;
+  const liked = !!(d.nx && d.nx[LIKE(id)]);
+  it.saving = true; it.like.disabled = true;
+  try {
+    const nx = await API.setComment(BAI, BUOI, PIN, it.cid, d.name, LIKE(id), liked ? "" : "Thích");
+    if (nx && typeof nx === "object") d.nx = nx;
+    else { d.nx = Object.assign({}, d.nx); if (liked) delete d.nx[LIKE(id)]; else d.nx[LIKE(id)] = "Thích"; }
+    renderTable(); renderPanel(id);
+    it.st.textContent = liked ? "Đã bỏ khen" : "Đã khen lúc " + stamp(); it.st.className = "status ok";
+  } catch(e) { it.st.textContent = e.message; it.st.className = "status bad"; }
+  it.saving = false; it.like.disabled = false;
+}
+
 function renderPanel(id){
   const p = PANELS[id]; if (!p) return;
   const t = TASKS[id], filter = $("filter").value;
@@ -170,7 +192,11 @@ function renderPanel(id){
     let it = p.items.get(d.clientId);
     if (!a.body && !nx) { if (it) it.item.hidden = true; return; }
     if (!it) { it = makeItem(id, d); p.items.set(d.clientId, it); p.list.appendChild(it.item); }
-    it.head.innerHTML = esc(d.name) + " " + a.chip + (nx ? ' <span class="chip nx">Đã nhận xét</span>' : "");
+    const liked = !!(d.nx && d.nx[LIKE(id)]);
+    it.head.innerHTML = esc(d.name) + " " + a.chip + (nx ? ' <span class="chip nx">Đã nhận xét</span>' : "") + (liked ? ' <span class="chip like">' + THUMB + "Đã khen</span>" : "");
+    it.like.innerHTML = THUMB + (liked ? "Đã khen" : "Khen");
+    it.like.setAttribute("aria-pressed", liked ? "true" : "false");
+    it.like.classList.toggle("suggest", !liked && a.ok === true);
     it.txt.innerHTML = a.body || '<span class="empty">Chưa trả lời</span>';
     if (!it.dirty && document.activeElement !== it.ta) it.ta.value = nx;
     const vis = !filter || filter === d.clientId;
@@ -192,9 +218,9 @@ function renderTable(){
   const tb = $("dash-rows"); tb.innerHTML = "";
   const nSubAll = DOCS.reduce((s, d) => s + countSub(d), 0);
   $("dash-sum").innerHTML = "<span>Số nhóm/học sinh: <b>" + DOCS.length + "</b></span><span>Tổng số câu đã nộp: <b>" + nSubAll + "</b></span>";
-  if (!DOCS.length) { tb.appendChild(el("tr", null, '<td colspan="5" class="empty">Chưa có nhóm nào vào buổi học. Học sinh quét mã QR, nhập tên nhóm và bấm Vào buổi học.</td>')); return; }
+  if (!DOCS.length) { tb.appendChild(el("tr", null, '<td colspan="6" class="empty">Chưa có nhóm nào vào buổi học. Học sinh quét mã QR, nhập tên nhóm và bấm Vào buổi học.</td>')); return; }
   DOCS.forEach(d => tb.appendChild(el("tr", null, "<td>" + esc(d.name) + '</td><td class="num">' + countSub(d) + "/" + TASK_IDS.length +
-    '</td><td class="num">' + Object.keys(d.nx || {}).length + '</td><td class="num">' + timeAgo(d.t) +
+    '</td><td class="num">' + nComments(d) + '</td><td class="num">' + nLikes(d) + '</td><td class="num">' + timeAgo(d.t) +
     '</td><td><button class="btn" type="button" data-view="' + esc(d.clientId) + '">Xem bài</button></td>')));
 }
 $("dash-rows").addEventListener("click", e => {
@@ -253,10 +279,11 @@ $("rev-none").addEventListener("click", () => setAll(false));
 
 /* ================= CSV ================= */
 $("csv").addEventListener("click", () => {
-  const head = ["Nhóm / Học sinh", "Đã nộp", "Cập nhật"].concat(summary({}).map(c => c[0])).concat(["Nhận xét của giáo viên"]);
+  const head = ["Nhóm / Học sinh", "Đã nộp", "Cập nhật"].concat(summary({}).map(c => c[0])).concat(["Nhận xét của giáo viên", "Câu được khen"]);
   const rows = DOCS.map(d => [d.name, countSub(d) + "/" + TASK_IDS.length, d.t ? new Date(d.t).toLocaleString("vi-VN") : ""]
     .concat(summary(d).map(c => c[1]))
-    .concat([Object.keys(d.nx || {}).map(k => (TASKS[k] ? TASKS[k].label : k) + ": " + d.nx[k]).join("\n")]));
+    .concat([Object.keys(d.nx || {}).filter(k => !isLikeKey(k)).map(k => (TASKS[k] ? TASKS[k].label : k) + ": " + d.nx[k]).join("\n"),
+             Object.keys(d.nx || {}).filter(isLikeKey).map(k => { const t = TASKS[k.slice(5)]; return t ? t.label : k; }).join("; ")]));
   const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
   const csv = "﻿" + [head].concat(rows).map(r => r.map(q).join(",")).join("\r\n");
   const a = el("a", {href: URL.createObjectURL(new Blob([csv], {type: "text/csv;charset=utf-8"})), download: "bai-lam-" + BUOI + ".csv"});
