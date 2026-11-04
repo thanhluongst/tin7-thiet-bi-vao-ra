@@ -2,7 +2,8 @@
    gửi nhận xét cho từng nhóm, chốt kiến thức cho cả lớp. */
 (function(){
 "use strict";
-const {TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, esc, summary} = window.LESSON;
+const {TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, esc, summary, NX_MAU, NX_CHUNG, autoComment} = window.LESSON;
+const GRADED = id => TASKS[id].type !== "open";
 const BAI = window.LESSON.id;
 const $ = id => document.getElementById(id);
 function el(tag, attrs, html){ const e = document.createElement(tag); if (attrs) for (const a in attrs) e.setAttribute(a, attrs[a]); if (html != null) e.innerHTML = html; return e; }
@@ -102,13 +103,15 @@ function buildTaskPanel(slot){
   slot.appendChild(det);
   const row = el("div", {class:"row"});
   const chot = el("button", {class:"btn keybtn", type:"button"});
+  const bulk = el("button", {class:"btn", type:"button", hidden:""});
   const stats = el("span", {class:"status"});
-  row.append(chot, stats); slot.appendChild(row);
+  row.append(chot, bulk, stats); slot.appendChild(row);
+  bulk.addEventListener("click", () => bulkSend(id));
   const list = el("div", {class:"ans-list"});
   const empty = el("p", {class:"empty"}, "Chưa có nhóm nào trả lời câu này.");
   slot.append(list, empty);
   chot.addEventListener("click", () => toggleRev(id));
-  PANELS[id] = {chot, stats, list, empty, items: new Map()};
+  PANELS[id] = {chot, bulk, stats, list, empty, items: new Map(), bulkBusy: false};
 }
 
 function buildConceptPanel(slot){
@@ -137,13 +140,21 @@ function makeItem(id, d){
   const taId = "nx-" + id + "-" + d.clientId;
   const lab = el("label", {for: taId, class:"status"}, "Nhận xét gửi cho nhóm");
   const ta = el("textarea", {id: taId, rows:"2", placeholder:"Ví dụ: Nhóm đã nêu đúng micro là thiết bị vào; cần giải thích thêm vì sao loa là thiết bị ra."});
+  const chips = el("div", {class:"nx-chips"});
+  chips.addEventListener("click", e => {
+    const c = e.target.closest("[data-nx]"); if (!c) return;
+    const add = c.getAttribute("data-nx"), cur = ta.value.trim();
+    ta.value = !cur || cur === it.lastChip ? add : cur + " " + add;
+    it.lastChip = ta.value; it.dirty = true; st.textContent = "Chưa gửi, bấm Gửi nhận xét"; st.className = "status";
+    ta.focus();
+  });
   const row = el("div", {class:"row"});
   const send = el("button", {class:"btn", type:"button"}, "Gửi nhận xét");
   const like = el("button", {class:"btn like-btn", type:"button", "aria-pressed":"false"});
   const st = el("span", {class:"status"});
-  row.append(like, send, st); fb.append(lab, ta, row);
+  row.append(like, send, st); fb.append(lab, chips, ta, row);
   item.append(head, txt, fb);
-  const it = {item, head, txt, ta, send, like, st, cid: d.clientId, dirty: false, saving: false};
+  const it = {item, head, txt, ta, send, like, st, chips, chipSig: "", lastChip: "", cid: d.clientId, dirty: false, saving: false};
   like.addEventListener("click", () => toggleLike(id, it));
   ta.addEventListener("input", () => { it.dirty = true; st.textContent = "Chưa gửi"; st.className = "status"; });
   ta.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) send.click(); });
@@ -162,6 +173,41 @@ async function sendComment(id, it){
     it.st.textContent = it.ta.value.trim() ? "Đã gửi lúc " + stamp() : "Đã xoá nhận xét"; it.st.className = "status ok";
   } catch(e) { it.st.textContent = e.message; it.st.className = "status bad"; }
   it.saving = false; it.send.disabled = false;
+}
+
+/* Gợi ý nhận xét theo kết quả bài của nhóm */
+function suggestions(id, d, a){
+  const m = NX_MAU[id] || {ok: [], fix: []}, out = [];
+  if (a.ok === true) m.ok.forEach(t => out.push(["ok", t]));
+  else if (a.ok === false) { const au = autoComment(id, d); if (au) out.push(["auto", au]); m.fix.forEach(t => out.push(["fix", t])); }
+  else { m.ok.forEach(t => out.push(["ok", t])); m.fix.forEach(t => out.push(["fix", t])); }
+  NX_CHUNG.forEach(t => out.push(["gen", t]));
+  return out;
+}
+function renderChips(it, list){
+  const sig = list.map(x => x[1]).join("|");
+  if (sig === it.chipSig) return;
+  it.chipSig = sig; it.chips.innerHTML = '<span class="status">Gợi ý (bấm để chèn):</span>';
+  list.forEach(([k, t]) => it.chips.appendChild(el("button", {class: "nx-chip " + k, type: "button", "data-nx": t, title: t}, esc(t))));
+}
+
+/* Gửi nhận xét gợi ý cho mọi nhóm đã nộp mà chưa được nhận xét (câu chấm tự động) */
+async function bulkSend(id){
+  const p = PANELS[id]; if (!p || p.bulkBusy) return;
+  const todo = DOCS.filter(d => d.sub && d.sub[id] && !(d.nx && d.nx[id]));
+  if (!todo.length) return;
+  p.bulkBusy = true; p.bulk.disabled = true;
+  let done = 0, fail = "";
+  for (const d of todo) {
+    const g = grade(id, d), m = NX_MAU[id] || {ok: [""], fix: [""]};
+    const text = g && g.ok ? m.ok[0] : (autoComment(id, d) || m.fix[0]);
+    p.bulk.textContent = "Đang gửi " + (done + 1) + "/" + todo.length + "…";
+    try { const nx = await API.setComment(BAI, BUOI, PIN, d.clientId, d.name, id, text); d.nx = nx || Object.assign({}, d.nx, {[id]: text}); done++; }
+    catch(e) { fail = e.message; break; }
+  }
+  p.bulkBusy = false; p.bulk.disabled = false;
+  renderTable(); renderPanel(id);
+  p.stats.textContent += fail ? " · Lỗi: " + fail : " · Đã gửi nhận xét cho " + done + " nhóm";
 }
 
 async function toggleLike(id, it){
@@ -197,6 +243,7 @@ function renderPanel(id){
     it.like.innerHTML = THUMB + (liked ? "Đã khen" : "Khen");
     it.like.setAttribute("aria-pressed", liked ? "true" : "false");
     it.like.classList.toggle("suggest", !liked && a.ok === true);
+    renderChips(it, suggestions(id, d, a));
     it.txt.innerHTML = a.body || '<span class="empty">Chưa trả lời</span>';
     if (!it.dirty && document.activeElement !== it.ta) it.ta.value = nx;
     const vis = !filter || filter === d.clientId;
@@ -205,6 +252,11 @@ function renderPanel(id){
   p.items.forEach((it, cid) => { if (!seen.has(cid)) it.item.hidden = true; });
   p.empty.hidden = shown > 0;
   p.stats.textContent = "Đã nộp " + nSub + "/" + DOCS.length + (t.type !== "open" && nSub ? " · Đúng " + nOk + "/" + nSub : "");
+  if (!p.bulkBusy) {
+    const pending = GRADED(id) ? DOCS.filter(d => d.sub && d.sub[id] && !(d.nx && d.nx[id])).length : 0;
+    p.bulk.hidden = !pending;
+    p.bulk.textContent = "Gửi nhận xét gợi ý cho " + pending + " nhóm chưa nhận xét";
+  }
 }
 
 function renderConcepts(){

@@ -93,5 +93,81 @@ function summary(d){
     return [id + " · " + t.label, v];
   });
 }
-window.LESSON = {id: "tin7-bai1", title: "Bài 1. Thiết bị vào – ra", TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, summary, esc};
+/* Nhận xét mẫu cho giáo viên: ok = khi trả lời đúng/tốt, fix = khi cần sửa.
+   Bám theo dự kiến khó khăn của học sinh trong kế hoạch bài dạy. */
+const NX_MAU = {
+  kd1: {ok:["Chính xác! Em nhớ đủ 4 thành phần: thiết bị vào, thiết bị ra, bộ xử lí và bộ nhớ.","Tốt! Em đã chỉ ra thiết bị vào – ra giúp máy tính trao đổi dữ liệu với thế giới bên ngoài."],
+        fix:["Em còn thiếu thành phần. Nhớ lại lớp 6: thiết bị vào, thiết bị ra, bộ xử lí và bộ nhớ.","Em nêu thêm: thành phần nào giúp máy tính trao đổi dữ liệu với thế giới bên ngoài?"]},
+  h1a: {ok:["Đúng, micro và loa cùng làm việc với thông tin dạng âm thanh."],
+        fix:["Micro thu tiếng nói, loa phát ra tiếng. Đó là dạng thông tin gì?"]},
+  h1b: {ok:["Chính xác! Micro nhận âm thanh và chuyển vào máy tính, nên micro là thiết bị vào.","Tốt! Em nói thêm: âm thanh được mã hoá thành dữ liệu số."],
+        fix:["Em xét chiều đi của âm thanh: từ người nói đi vào máy tính qua thiết bị nào?"]},
+  h1c: {ok:["Chính xác! Loa đưa âm thanh từ máy tính ra ngoài, nên loa là thiết bị ra."],
+        fix:["Thông tin đi từ máy tính ra ngoài để em nghe được qua thiết bị nào?"]},
+  h2a: {ok:["Em đã nêu đúng dạng thông tin của từng thiết bị. Rất tốt!","Tốt! Em phát hiện bảng vẽ điện tử có mặt ở cả nhóm vào và nhóm ra."],
+        fix:["Em còn thiếu dạng thông tin của một số thiết bị. Thử ghép với: âm thanh, hình ảnh, văn bản, lệnh.","Em quan sát kĩ Hình 1.2: thiết bị nào có mặt ở cả nhóm vào và nhóm ra?"]},
+  h2b: {ok:["Đúng! Máy chiếu đưa hình ảnh, văn bản từ máy tính ra màn chiếu nên là thiết bị ra."],
+        fix:["Máy chiếu nhận hình từ máy tính rồi chiếu cho cả lớp xem. Thông tin đi vào hay đi ra khỏi máy tính?"]},
+  h2c: {ok:["Chính xác! Bộ điều khiển game đưa lệnh vào máy tính để điều khiển trò chơi."],
+        fix:["Khi em bấm nút trên tay cầm, lệnh đi vào hay đi ra khỏi máy tính?"]},
+  h2d: {ok:["Đúng! Màn hình cảm ứng vừa hiển thị (ra) vừa nhận thao tác chạm (vào)."],
+        fix:["Màn hình cảm ứng có hiển thị hình không? Có nhận ngón tay chạm không? Vậy nó có mấy chức năng?"]},
+  sortDev: {ok:["Nhóm xếp đúng tất cả thiết bị. Rất tốt!"],
+        fix:["Nhóm hãy phân loại theo chiều đi của thông tin, không dựa vào hình dạng thiết bị."]},
+  h2e: {ok:["Đúng! Loa thông minh là thiết bị ra; máy ghi hình là thiết bị vào và còn lưu trữ, xử lí ảnh, video."],
+        fix:["Em đọc lại SGK trang 7: loa thông minh là thiết bị vào hay ra? Ngoài ra nó còn làm được gì?"]},
+  p7a: {ok:["Chính xác! Máy ảnh nhập thông tin dạng hình ảnh."],
+        fix:["Máy ảnh chụp lại cái gì? Đó là dạng thông tin nào?"]},
+  p7b: {ok:["Chính xác! Loa xuất âm thanh từ máy tính ra ngoài."],
+        fix:["Micro cũng làm việc với âm thanh nhưng đưa âm thanh vào máy. Thiết bị nào đưa âm thanh ra?"]},
+  h3a: {ok:["Nhóm lắp đúng tất cả các cổng!"],
+        fix:["Em xem kĩ hình dạng đầu nối, kí hiệu và màu của cổng. Ví dụ: tai nghe cắm cổng màu xanh lá có hình tai nghe."]},
+  h3b: {ok:["Đúng! Chỉ cấp nguồn sau khi đã kết nối xong các thiết bị để an toàn điện."],
+        fix:["Nếu cắm điện trước rồi mới cắm các dây khác thì điều gì có thể xảy ra?"]},
+  sortSafe: {ok:["Nhóm phân biệt đúng việc nên làm và không nên làm. Rất tốt!"],
+        fix:["Với mỗi việc, em hỏi: việc này có làm hỏng thiết bị, mất dữ liệu hay mất an toàn điện không?"]},
+  p9a: {ok:["Chính xác! Dùng nút lệnh Shut down là cách tắt máy an toàn."],
+        fix:["Nhấn giữ công tắc hay rút dây nguồn là ngắt điện đột ngột. Cách nào an toàn hơn?"]},
+  p9b: {ok:["Đúng! Thức ăn, nước uống có thể làm hỏng bàn phím, chuột và gây chập điện."],
+        fix:["Em nghĩ thêm: nếu nước hay vụn bánh rơi vào bàn phím thì sao?"]},
+  lt1: {ok:["Chính xác! Bộ tai nghe có micro là thiết bị vừa vào vừa ra."],
+        fix:["Tai nghe phát âm thanh (ra), micro gắn kèm thu âm thanh (vào). Vậy cả bộ là loại thiết bị gì?"]},
+  lt2: {ok:["Thứ tự đúng: lưu tệp, đóng tệp, ngắt kết nối thẻ nhớ, rồi tắt máy."],
+        fix:["Nếu rút thẻ nhớ khi tệp chưa lưu, dữ liệu có bị mất không? Em sắp xếp lại nhé."]},
+  vd1: {ok:["Lập luận rất tốt: camera chỉ là thiết bị vào nên người đứng trước không biết đang bị theo dõi."],
+        fix:["Camera có hiển thị gì cho người đứng trước nó không? Em xét chiều đi của thông tin."]},
+  vd2: {ok:["Chính xác! Virus nằm ở máy tính, máy in chỉ là thiết bị ra in theo dữ liệu được gửi tới."],
+        fix:["Máy in tự nghĩ ra nội dung để in hay in theo dữ liệu máy tính gửi tới? Virus nằm ở đâu?"]},
+  vd3: {ok:["Nhóm đưa ra các quy tắc rõ ràng, thiết thực. Rất tốt!"],
+        fix:["Em bổ sung thêm quy tắc về đồ ăn uống, cách tắt máy và cách cắm, rút thiết bị."]}
+};
+const NX_CHUNG = ["Cảm ơn nhóm đã trình bày rõ ràng!","Em giải thích thêm lí do nhé.","Ý đúng nhưng còn thiếu, em bổ sung thêm."];
+
+/* Nhận xét tự sinh, nêu đúng chỗ sai (dùng cho xếp nhóm, ghép cổng, sắp thứ tự) */
+function autoComment(id, d){
+  const t = TASKS[id];
+  if (t.type === "sort") {
+    const m = (d.sort && d.sort[id]) || {};
+    const wrong = t.items.map(([name, c], i) => ({name, c, v: m[i]})).filter(x => x.v !== x.c && x.v != null && x.v !== -1);
+    const unsure = t.items.filter((x, i) => m[i] == null || m[i] === -1).map(x => x[0]);
+    if (!wrong.length && !unsure.length) return "";
+    let s = "";
+    if (wrong.length) s += "Nhóm xếp chưa đúng: " + wrong.map(x => x.name + " (nhóm chọn " + t.cats[x.v] + ")").join("; ") + ". ";
+    if (unsure.length) s += "Chưa xếp: " + unsure.join(", ") + ". ";
+    return s + (id === "sortDev" ? "Em xét lại: thông tin đi vào hay đi ra khỏi máy tính?" : "Em xét lại: việc này có làm hỏng thiết bị, mất dữ liệu hay mất an toàn không?");
+  }
+  if (t.type === "match") {
+    const m = (d.match && d.match[id]) || {};
+    const wrong = t.items.map(([name, p], i) => ({name, p, v: m[i]})).filter(x => Number(x.v) !== x.p);
+    if (!wrong.length) return "";
+    return "Nhóm cần xem lại: " + wrong.map(x => x.name + (x.v ? " (nhóm chọn cổng " + x.v + ")" : " (chưa chọn)")).join("; ") + ". Gợi ý: so hình dạng đầu nối với kí hiệu, màu của cổng.";
+  }
+  if (t.type === "order") {
+    const a = d.order && d.order[id];
+    if (!Array.isArray(a) || a.join() === t.ans.join()) return "";
+    return "Nhóm sắp xếp: " + a.join(" → ") + ". Em xem lại: phải lưu và đóng tệp trước, ngắt thẻ nhớ an toàn rồi mới tắt máy.";
+  }
+  return "";
+}
+window.LESSON = {id: "tin7-bai1", title: "Bài 1. Thiết bị vào – ra", TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, summary, esc, NX_MAU, NX_CHUNG, autoComment};
 })();

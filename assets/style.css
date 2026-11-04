@@ -211,3 +211,10 @@ details.key-det .key-inline{margin-top:6px}
 .chip.like .ico{width:12px;height:12px;fill:currentColor;vertical-align:0}
 .liked{display:inline-flex;gap:8px;align-items:center;font-weight:700;color:var(--ok);background:var(--ok-soft);border:1px solid var(--ok);border-radius:999px;padding:4px 12px;justify-self:start;font-size:14px}
 .liked .ico{width:18px;height:18px;fill:currentColor}
+/* Gợi ý nhận xét */
+.nx-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.nx-chip{font:inherit;font-size:13px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:4px 10px;border-radius:999px;max-width:100%;cursor:pointer}
+.nx-chip:hover{border-color:var(--accent)}
+.nx-chip.ok{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.nx-chip.fix{border-color:var(--key-line);color:var(--key);background:var(--key-soft)}
+.nx-chip.auto{border-color:var(--bad);color:var(--bad);background:var(--bad-soft)}
