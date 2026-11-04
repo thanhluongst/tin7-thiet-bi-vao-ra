@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Trang giáo viên · Thiết bị vào – ra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lexend:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css?v=1">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Tin học 7 · Bài 1. Thiết bị vào – ra</div>
+    <h1>Trang giáo viên</h1>
+    <p class="lead">Mở buổi học, cho học sinh quét mã QR, theo dõi câu trả lời của các nhóm và chốt kiến thức cho cả lớp.</p>
+    <div class="mode"><span class="pill t">Giáo viên</span><span id="conn-text"></span><span class="sync" id="sync"></span></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section class="part" id="dang-nhap">
+      <div class="part-head"><h2>Mở buổi học</h2></div>
+      <div class="act login">
+        <div class="row"><label for="pin">Mã giáo viên</label><input id="pin" type="password" autocomplete="current-password"></div>
+        <div class="row"><label for="buoi">Mã buổi học</label><input id="buoi" type="text" autocomplete="off" placeholder="Ví dụ: 7A2-T1" style="width:160px"><button class="btn" id="gen" type="button">Tạo mã mới</button></div>
+        <div class="row"><button class="btn primary" id="login" type="button">Mở buổi học</button><span class="status bad" id="login-msg"></span></div>
+        <p class="status">Mỗi lớp, mỗi tiết nên dùng một mã buổi học riêng để bài làm không lẫn vào nhau.</p>
+      </div>
+    </section>
+
+    <div id="app" hidden style="display:grid;gap:40px">
+      <section class="part" id="chia-se">
+        <div class="part-head"><div class="eyebrow">Buổi học</div><h2>Cho học sinh vào buổi học</h2></div>
+        <div class="act">
+          <div class="share">
+            <div class="qr" id="qr"></div>
+            <div style="display:grid;gap:8px;min-width:0">
+              <div>Mã buổi học: <span class="big-code" id="code"></span></div>
+              <div>Link cho học sinh:</div>
+              <code id="link"></code>
+              <div class="row"><button class="btn" id="copy" type="button">Sao chép link</button><button class="btn" id="switch" type="button">Đổi buổi học</button><button class="btn" id="logout" type="button">Đăng xuất</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="part" id="theo-doi">
+        <div class="part-head"><div class="eyebrow">Tự cập nhật mỗi 8 giây</div><h2>Theo dõi lớp</h2></div>
+        <div class="act">
+          <div class="dash-sum" id="dash-sum"></div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Nhóm / Học sinh</th><th>Đã nộp</th><th>Cập nhật</th></tr></thead><tbody id="dash-rows"></tbody></table></div>
+          <div class="row"><button class="btn" id="csv" type="button">Tải bảng tổng hợp (CSV)</button><button class="btn" id="refresh" type="button">Cập nhật ngay</button></div>
+        </div>
+        <div class="act">
+          <div class="dash-q">
+            <label for="dash-select"><b>Câu trả lời của cả lớp:</b></label>
+            <select id="dash-select"></select>
+            <button class="btn keybtn" id="dash-reveal" type="button"></button>
+          </div>
+          <div class="key-inline" id="dash-key"></div>
+          <div class="ans-list" id="dash-answers"></div>
+        </div>
+      </section>
+
+      <section class="part" id="chot">
+        <div class="part-head"><div class="eyebrow">Học sinh thấy phần chốt sau khoảng 10–15 giây</div><h2>Chốt kiến thức</h2></div>
+        <div class="act">
+          <div class="row"><button class="btn keybtn" id="rev-all" type="button">Chốt tất cả</button><button class="btn" id="rev-none" type="button">Ẩn tất cả</button></div>
+          <div class="rev-list" id="rev-list"></div>
+        </div>
+      </section>
+    </div>
+
+  </div>
+</main>
+
+<footer class="foot"><div class="wrap"><a href="index.html">Trang học sinh</a></div></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="config.js?v=1"></script>
+<script src="assets/content.js?v=1"></script>
+<script src="assets/api.js?v=1"></script>
+<script src="assets/gv.js?v=1"></script>
+</body>
+</html>
