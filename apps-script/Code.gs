@@ -14,6 +14,8 @@
 
 const SHEET_BAI = "BaiLam";
 const SHEET_CHOT = "Chot";
+const SHEET_NX = "NhanXet";
+const NX_HEADERS = ["Khóa", "Bài", "Buổi", "Nhóm / Học sinh", "Mã máy", "Nhận xét (không sửa)", "Tóm tắt nhận xét", "Cập nhật"];
 const BASE_HEADERS = ["Khóa", "Bài", "Buổi", "Nhóm / Học sinh", "Mã máy", "Cập nhật", "Đã nộp", "Dữ liệu (không sửa)"];
 const COL_JSON = 8;               // cột "Dữ liệu"
 const MAX_JSON = 45000;           // giới hạn ô Google Sheets là 50 000 kí tự
@@ -25,6 +27,7 @@ function doGet(e) {
     switch (p.action) {
       case "ping": return {};
       case "reveal": return { rev: getReveal_(id_(p.bai), id_(p.buoi)) };
+      case "status": return { rev: getReveal_(id_(p.bai), id_(p.buoi)), nx: getNx_(id_(p.bai), id_(p.buoi), id_(p.clientId)) };
       case "checkpin": checkPin_(p.pin); return {};
       case "class": checkPin_(p.pin); return { docs: getClass_(id_(p.bai), id_(p.buoi)) };
       default: throw new Error("Hành động không hợp lệ");
@@ -39,6 +42,7 @@ function doPost(e) {
     switch (b.action) {
       case "submit": saveSubmission_(b); return {};
       case "setReveal": checkPin_(b.pin); setReveal_(id_(b.bai), id_(b.buoi), b.rev); return {};
+      case "comment": checkPin_(b.pin); return { nx: setComment_(b) };
       default: throw new Error("Hành động không hợp lệ");
     }
   });
@@ -127,15 +131,66 @@ function getClass_(bai, buoi) {
   const sh = SpreadsheetApp.getActive().getSheetByName(SHEET_BAI);
   if (!sh || sh.getLastRow() < 2) return [];
   const vals = sh.getRange(2, 1, sh.getLastRow() - 1, COL_JSON).getValues();
+  const allNx = getAllNx_(bai, buoi);
   const out = [];
   vals.forEach(v => {
     if (String(v[1]) !== bai || String(v[2]) !== buoi) return;   // Sheets có thể đổi "1104" thành số
     let data = {};
     try { data = JSON.parse(v[COL_JSON - 1] || "{}"); } catch (err) {}
     const g = String(v[3] || "");
-    out.push({ group: g.charAt(0) === "'" ? g.slice(1) : g, clientId: v[4], t: v[5] instanceof Date ? v[5].getTime() : 0, data: data });
+    out.push({ group: g.charAt(0) === "'" ? g.slice(1) : g, clientId: v[4], t: v[5] instanceof Date ? v[5].getTime() : 0, data: data, nx: allNx[String(v[4])] || {} });
   });
   return out;
+}
+
+/* ---------- Nhận xét của giáo viên cho từng nhóm, từng câu ---------- */
+function getNx_(bai, buoi, cid) {
+  const cache = CacheService.getScriptCache();
+  const ck = "nx|" + bai + "|" + buoi + "|" + cid;
+  const hit = cache.get(ck);
+  if (hit) return JSON.parse(hit);
+  let nx = {};
+  const sh = SpreadsheetApp.getActive().getSheetByName(SHEET_NX);
+  if (sh) {
+    const r = findRow_(sh, bai + "|" + buoi + "|" + cid);
+    if (r) { try { nx = JSON.parse(sh.getRange(r, 6).getValue() || "{}"); } catch (err) {} }
+  }
+  cache.put(ck, JSON.stringify(nx), 21600);
+  return nx;
+}
+
+function getAllNx_(bai, buoi) {
+  const sh = SpreadsheetApp.getActive().getSheetByName(SHEET_NX);
+  const out = {};
+  if (!sh || sh.getLastRow() < 2) return out;
+  sh.getRange(2, 1, sh.getLastRow() - 1, 6).getValues().forEach(v => {
+    if (String(v[1]) !== bai || String(v[2]) !== buoi) return;
+    try { out[String(v[4])] = JSON.parse(v[5] || "{}"); } catch (err) {}
+  });
+  return out;
+}
+
+function setComment_(b) {
+  const bai = id_(b.bai), buoi = id_(b.buoi), cid = id_(b.clientId), task = id_(b.task);
+  const text = String(b.text || "").trim().slice(0, 2000);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const sh = sheet_(SHEET_NX, NX_HEADERS);
+    const key = bai + "|" + buoi + "|" + cid;
+    const r = findRow_(sh, key);
+    let nx = {};
+    if (r) { try { nx = JSON.parse(sh.getRange(r, 6).getValue() || "{}"); } catch (err) {} }
+    if (text) nx[task] = text; else delete nx[task];
+    const summary = Object.keys(nx).map(k => k + ": " + nx[k]).join("\n");
+    const row = [key, bai, buoi, safe_(String(b.group || "").slice(0, 80)), cid, JSON.stringify(nx), safe_(summary), new Date()];
+    if (r) sh.getRange(r, 1, 1, row.length).setValues([row]);
+    else sh.appendRow(row);
+    CacheService.getScriptCache().put("nx|" + key, JSON.stringify(nx), 21600);
+    return nx;
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /* ---------- Chốt kiến thức ---------- */
@@ -176,4 +231,5 @@ function setReveal_(bai, buoi, rev) {
 function khoiTao() {
   sheet_(SHEET_BAI, BASE_HEADERS);
   sheet_(SHEET_CHOT, ["Khóa", "Bài", "Buổi", "Đã chốt", "Cập nhật"]);
+  sheet_(SHEET_NX, NX_HEADERS);
 }

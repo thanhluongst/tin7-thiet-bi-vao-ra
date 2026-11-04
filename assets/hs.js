@@ -37,6 +37,7 @@ const noteKey = id => S.active + "|" + id;
 /* mode: local (một máy, không mạng) | online (đã vào buổi học, bài gửi lên Google Sheets) */
 let mode = "local";
 let REV = {};            // phần chốt giáo viên mở cho buổi học
+let NX = {};             // nhận xét giáo viên gửi cho máy này (theo từng câu)
 let myWriter = null;
 const classDocs = [];
 if (!S.clientId) S.clientId = "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -150,6 +151,9 @@ document.querySelectorAll("[data-task]").forEach(slot => {
   const st = el("span", {class:"status"});
   row.append(bSub, bKey, st); slot.appendChild(row);
   const kb = keyBox(id, (t.type === "mcq" ? "Đáp án đúng: <b>" + L[t.a] + "</b>. " : "") + t.k);
+  const fb = el("div", {class:"feedback"}, '<span class="fl">Nhận xét của thầy cô</span>');
+  const fbText = el("span", {class:"ft"}); fb.appendChild(fbText);
+  slot.insertBefore(fb, row.nextSibling);
   slot.appendChild(kb.box);
   let err = "";
   function render(){
@@ -168,6 +172,8 @@ document.querySelectorAll("[data-task]").forEach(slot => {
     kb.box.hidden = !rev;
     kb.note.hidden = !T;
     kb.sync();
+    const nx = mode === "online" ? (NX[id] || "") : "";
+    fbText.textContent = nx; fb.hidden = !nx;
   }
   bSub.addEventListener("click", () => {
     if (!S.sub[id] && !body.has()) { err = "Em hãy trả lời trước khi nộp."; render(); return; }
@@ -336,8 +342,13 @@ let pollTimer = null;
 async function pollReveal(){
   if (mode !== "online") return;
   try {
-    const rev = await API.getReveal(window.LESSON.id, S.session);
-    if (JSON.stringify(rev) !== JSON.stringify(REV)) { REV = rev; renderAll(); }
+    const st = await API.getStatus(window.LESSON.id, S.session, S.clientId);
+    const fresh = JSON.stringify(st.rev) !== JSON.stringify(REV) || JSON.stringify(st.nx) !== JSON.stringify(NX);
+    if (fresh) {
+      const newNx = Object.keys(st.nx).filter(k => st.nx[k] !== NX[k]).length;
+      REV = st.rev; NX = st.nx; renderAll();
+      if (newNx) setSync("Thầy cô vừa gửi nhận xét mới lúc " + stamp() + ".");
+    }
   } catch(e) { setSync("Chưa nhận được phần chốt (" + e.message + ")."); }
   clearTimeout(pollTimer);
   pollTimer = setTimeout(pollReveal, 10000 + Math.random() * 5000);
@@ -365,13 +376,13 @@ function joinSession(){
   S.active = k;
   GF.forEach(f => S[f] = clone(g[f]));
   S.name = name; nm.value = name;
-  REV = {};
+  REV = {}; NX = {};
   goOnline();
 }
 function leaveSession(){
   stash();
   clearTimeout(pollTimer);
-  myWriter = null; mode = "local"; REV = {};
+  myWriter = null; mode = "local"; REV = {}; NX = {};
   const k = S.localActive && S.localActive[0] === "g" ? S.localActive : "g1";
   const g = groupData(k);
   S.active = k; S.session = "";

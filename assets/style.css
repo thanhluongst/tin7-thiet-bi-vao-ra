@@ -188,3 +188,16 @@ footer.foot a{color:var(--accent)}
 [hidden]{display:none!important}
 img{max-width:100%}
 body{font-size:16px}
+/* Trang giáo viên: bài học kèm bài các nhóm */
+.app-grid,.lesson-grid{display:grid;gap:40px}
+select.filter{font:inherit;font-size:14px;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:180px}
+details.key-det summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--key)}
+details.key-det .key-inline{margin-top:6px}
+.tq .ans-list{display:grid;gap:8px}
+.fb-edit{display:grid;gap:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.fb-edit textarea{min-height:48px;background:var(--surface)}
+.chip.nx{background:var(--key-soft);color:var(--key)}
+/* Trang học sinh: nhận xét của giáo viên */
+.feedback{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;padding:8px 12px;display:grid;gap:2px}
+.feedback .fl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.feedback .ft{white-space:pre-wrap}

@@ -70,6 +70,8 @@ Làm theo Bước 1 bên dưới. Khi `config.js` đã có `API_URL`, trang họ
    };
    ```
 
+> Nhận xét của giáo viên được lưu ở trang tính **NhanXet** (tự tạo khi gửi nhận xét đầu tiên).
+>
 > Khi sửa `Code.gs` sau này, phải vào **Triển khai → Quản lý các lần triển khai → Chỉnh sửa → Phiên bản: Phiên bản mới** thì thay đổi mới có hiệu lực. URL giữ nguyên.
 
 ## Bước 2. Đưa lên GitHub Pages
@@ -94,11 +96,13 @@ Làm theo Bước 1 bên dưới. Khi `config.js` đã có `API_URL`, trang họ
 1. **Giáo viên** mở `giaovien.html`, nhập mã giáo viên và tạo **mã buổi học** riêng cho từng lớp, từng tiết (ví dụ `7A2-T1`), rồi bấm **Mở buổi học**.
 2. Chiếu **mã QR** lên màn hình. **Học sinh** quét mã: trang tự điền sẵn mã buổi học. Các em nhập **tên nhóm** và bấm **Vào buổi học**.
 3. Học sinh làm bài, bấm **Nộp câu trả lời**. Bài tự gửi lên Google Sheet. Khi mất mạng, bài vẫn lưu trên máy và tự gửi lại.
-4. Giáo viên xem mục **Theo dõi lớp**:
-   - tiến độ từng nhóm;
-   - câu trả lời của cả lớp cho từng câu, kèm nhãn Đúng/Chưa đúng;
-   - đáp án chốt để đối chiếu.
-5. Sau khi các nhóm trình bày, giáo viên bấm **Chốt** ở từng câu. Trang học sinh tự hiện phần chốt sau 10–15 giây.
+4. Trang giáo viên hiển thị **toàn bộ nội dung bài học** (hình, câu hỏi SGK). Ngay dưới mỗi câu có:
+   - bài của từng nhóm, kèm nhãn Đã nộp / Đúng / Chưa đúng;
+   - nút xem **Đáp án / phần chốt**;
+   - ô **Nhận xét gửi cho nhóm**: gõ nhận xét rồi bấm **Gửi nhận xét** (hoặc Ctrl + Enter). Nhóm đó thấy nhận xét ngay dưới câu trả lời của mình sau 10–15 giây.
+
+   Ô **Xem bài của** trên thanh mục lục dùng để lọc, chỉ hiện bài của một nhóm. Bảng **Tiến độ các nhóm** cho biết mỗi nhóm đã nộp bao nhiêu câu và đã được nhận xét bao nhiêu câu.
+5. Sau khi các nhóm trình bày, giáo viên bấm **Chốt câu này cho cả lớp**. Trang học sinh tự hiện phần chốt sau 10–15 giây.
 6. **Suy ngẫm sau giờ dạy:**
    - mở Google Sheet: mỗi nhóm một dòng, mỗi câu một cột (bài nháp ghi "(nháp)", câu trắc nghiệm có ✓/✗);
    - hoặc bấm **Tải bảng tổng hợp (CSV)** trên trang giáo viên.
