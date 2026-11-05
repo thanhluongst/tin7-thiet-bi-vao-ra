@@ -11,7 +11,7 @@ Trang học tương tác theo **nghiên cứu bài học**. Học sinh trả l�
 **Trang trực tuyến:** https://thanhluongst.github.io/tin7-thiet-bi-vao-ra/
 
 ```
-Học sinh (index.html) ──gửi bài──▶ Apps Script ──▶ Google Sheet "BaiLam"
+Học sinh (index.html) ──gửi bài──▶ Apps Script ──▶ Google Sheet, trang tính "<mã bài>" (ví dụ tin7-bai1)
 Giáo viên (giaovien.html) ◀──xem bài── Apps Script
 Giáo viên ──chốt──▶ Apps Script ──▶ trang học sinh tự hiện phần chốt (10–15 giây)
 ```
@@ -57,7 +57,7 @@ Làm theo Bước 1 bên dưới. Khi `config.js` đã có `API_URL`, trang họ
 4. Bấm biểu tượng **bánh răng (Cài đặt dự án)** → kéo xuống **Thuộc tính tập lệnh** → **Thêm thuộc tính tập lệnh**:
    - Thuộc tính: `MA_GIAO_VIEN`
    - Giá trị: mã bí mật của thầy/cô, ví dụ `Tin7@2026`. **Không** dùng mật khẩu Gmail.
-5. Quay lại trình soạn thảo, chọn hàm `khoiTao`, bấm **Chạy**. Lần đầu Google sẽ hỏi quyền truy cập bảng tính: chọn tài khoản của thầy/cô → **Nâng cao** → **Đi tới dự án** → **Cho phép**. Bảng tính sẽ có hai trang `BaiLam` và `Chot`.
+5. Quay lại trình soạn thảo, chọn hàm `khoiTao`, bấm **Chạy**. Lần đầu Google sẽ hỏi quyền truy cập bảng tính: chọn tài khoản của thầy/cô → **Nâng cao** → **Đi tới dự án** → **Cho phép**. Bảng tính sẽ có hai trang `Chot` và `NhanXet`. Trang bài làm của mỗi bài (đặt tên theo mã bài, ví dụ `tin7-bai1`) tự tạo khi có bài nộp đầu tiên.
 6. Bấm **Triển khai → Tùy chọn triển khai mới**:
    - Bánh răng cạnh "Chọn loại" → **Ứng dụng web**
    - Thực thi dưới dạng: **Tôi**
@@ -73,6 +73,18 @@ Làm theo Bước 1 bên dưới. Khi `config.js` đã có `API_URL`, trang họ
 > Nhận xét của giáo viên được lưu ở trang tính **NhanXet** (tự tạo khi gửi nhận xét đầu tiên).
 >
 > Khi sửa `Code.gs` sau này, phải vào **Triển khai → Quản lý các lần triển khai → Chỉnh sửa → Phiên bản: Phiên bản mới** thì thay đổi mới có hiệu lực. URL giữ nguyên.
+
+### Nâng cấp Apps Script (mỗi bài một trang tính)
+
+Từ tháng 11/2026, `Code.gs` ghi bài làm của mỗi bài vào **một trang tính riêng, đặt tên theo mã bài** (`tin7-bai1`, `tin7-bai2`, …) thay cho một trang `BaiLam` chung. Nhờ vậy, khi dùng cho cả trường, Google Sheet vẫn gọn và trang giáo viên tải nhanh. Nếu thầy/cô đã cài bản cũ:
+
+1. Mở Apps Script của Google Sheet, xoá mã cũ, dán toàn bộ `apps-script/Code.gs` mới, bấm **Lưu**.
+2. **Triển khai → Quản lý các lần triển khai →** biểu tượng bút chì → **Phiên bản: Phiên bản mới → Triển khai**. URL `/exec` giữ nguyên, không phải sửa `config.js`.
+3. Chọn hàm `chuyenDuLieuCu`, bấm **Chạy** (chỉ một lần). Hàm chuyển bài cũ sang trang tính của từng bài và đổi tên trang cũ thành `BaiLam (đã chuyển)`. Kiểm tra xong thì thầy/cô tự xoá trang đó. Chạy lại cũng không bị trùng dòng.
+
+Trước khi chạy bước 3, trang giáo viên vẫn đọc được bài cũ.
+
+**Mỗi năm học nên dùng một tệp Google Sheet mới.** Tạo tệp, dán `Code.gs`, triển khai, rồi dán URL mới vào `config.js` của các bài. Tệp năm cũ giữ lại để suy ngẫm.
 
 ## Bước 2. Đưa lên GitHub Pages
 
@@ -158,7 +170,7 @@ Bấm vào một ô để mở bài của nhóm đó ở câu tương ứng.
    Ô **Xem bài của** trên thanh mục lục dùng để lọc, chỉ hiện bài của một nhóm. Bảng **Tiến độ các nhóm** cho biết mỗi nhóm đã nộp bao nhiêu câu và đã được nhận xét bao nhiêu câu.
 5. Sau khi các nhóm trình bày, giáo viên bấm **Chốt câu này cho cả lớp**. Trang học sinh tự hiện phần chốt sau 10–15 giây.
 6. **Suy ngẫm sau giờ dạy:**
-   - mở Google Sheet: mỗi nhóm một dòng, mỗi câu một cột (bài nháp ghi "(nháp)", câu trắc nghiệm có ✓/✗);
+   - mở Google Sheet, chọn trang tính mang mã bài (ví dụ `tin7-bai1`), lọc theo cột **Buổi**: mỗi nhóm một dòng, mỗi câu một cột (bài nháp ghi "(nháp)", câu trắc nghiệm có ✓/✗);
    - hoặc bấm **Tải bảng tổng hợp (CSV)** trên trang giáo viên.
 
 **Phòng học không có mạng:** học sinh không bấm "Vào buổi học". Trang chạy chế độ **một máy nhiều nhóm**. Giáo viên nhập mã `tin7` trên máy trình chiếu, chọn từng nhóm để ghi câu trả lời khi nhóm báo cáo, rồi chốt ngay trên máy đó.
@@ -167,11 +179,11 @@ Bấm vào một ô để mở bài của nhóm đó ở câu tương ứng.
 
 - **Học sinh** không có tài khoản. Các em được nhận diện bằng *mã buổi học + tên nhóm + mã máy* (tự sinh, lưu trong trình duyệt). Chỉ nên nhập tên nhóm hoặc tên ngắn, không nhập thông tin cá nhân.
 - **Giáo viên** dùng chung một mã giáo viên lưu trong Thuộc tính tập lệnh. Muốn thêm giáo viên dự giờ thì đưa họ mã, hoặc chia sẻ Google Sheet ở quyền xem. Đổi mã chỉ cần sửa thuộc tính `MA_GIAO_VIEN`, không phải sửa GitHub.
-- **Xoá dữ liệu cũ:** xoá các dòng trong trang `BaiLam` của Google Sheet.
+- **Xoá dữ liệu cũ:** xoá các dòng trong trang tính của bài đó, hoặc sang năm học mới thì dùng tệp Google Sheet mới.
 - **Lưu ý:**
   - Link GitHub Pages công khai, ai có link và mã buổi học đều gửi bài được. Mỗi tiết hãy dùng một mã buổi học mới.
   - Mã `tin7` của chế độ một máy nằm trong mã nguồn công khai, chỉ để học sinh không bấm nhầm.
 
 ## Thêm bài học khác
 
-Sao chép thư mục, sửa `assets/content.js` (câu hỏi, đáp án, `id` của bài) và phần nội dung trong `index.html`. Có thể dùng chung Google Sheet và Apps Script: bài làm được tách theo cột **Bài**.
+Sao chép thư mục, sửa `assets/content.js` (câu hỏi, đáp án, `id` của bài) và phần nội dung trong `index.html`. Dùng chung Google Sheet và Apps Script: mỗi bài tự có trang tính riêng theo `id`. Xem quy trình đầy đủ ở kho [tin-thcs](https://github.com/thanhluongst/tin-thcs).
