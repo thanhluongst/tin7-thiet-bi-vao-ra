@@ -409,3 +409,23 @@ details.ol{border-color:var(--accent);border-width:1.5px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lesson-title h1{background-color:#0c665e}}
 :root[data-theme="dark"] .lesson-title h1{background-color:#0c665e}
+
+/* ===== Trắc nghiệm: phương án em chọn nổi bật hẳn ===== */
+.q .opt{display:flex;align-items:center;gap:4px;border-width:2px;transition:background .15s,border-color .15s,opacity .15s}
+.q .opt:hover:not(:disabled){border-color:var(--accent)}
+.q .opt .l{flex:none;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;margin-right:6px;border:2px solid var(--qline);background:var(--surface)}
+.q .opt.sel{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;box-shadow:0 0 0 4px var(--accent-soft)}
+.q .opt.sel .l{background:var(--accent-ink);border-color:var(--accent-ink);color:var(--accent)}
+.q .opt.sel::after{content:"✓ Em chọn";margin-left:auto;padding-left:10px;font-size:12px;font-weight:700;white-space:nowrap}
+/* các phương án không chọn mờ đi một chút */
+.q .opts:has(.sel) .opt:not(.sel):not(.right){opacity:.6}
+/* sau khi thầy cô chốt */
+.q .opt.right{background:var(--ok-soft);border-color:var(--ok);color:var(--fg);opacity:1}
+.q .opt.right .l{border-color:var(--ok);color:var(--ok)}
+.q .opt.right:not(.sel)::after{content:"Đáp án đúng";margin-left:auto;padding-left:10px;font-size:12px;font-weight:700;color:var(--ok);white-space:nowrap}
+.q .opt.sel.right{background:var(--ok);border-color:var(--ok);color:var(--accent-ink);box-shadow:0 0 0 4px var(--ok-soft)}
+.q .opt.sel.right .l{background:var(--accent-ink);color:var(--ok)}
+.q .opt.sel.right::after{content:"✓ Em chọn đúng"}
+.q .opt.sel.wrong{background:var(--bad);border-color:var(--bad);color:var(--accent-ink);box-shadow:0 0 0 4px var(--bad-soft)}
+.q .opt.sel.wrong .l{background:var(--accent-ink);color:var(--bad)}
+.q .opt.sel.wrong::after{content:"✗ Em chọn"}
