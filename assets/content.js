@@ -62,7 +62,30 @@ const CONCEPTS = {
   c1:{t:"Khái niệm", b:"<ul><li><b>Thiết bị vào</b> được dùng để nhập thông tin vào máy tính như bàn phím, chuột, micro,…</li><li><b>Thiết bị ra</b> được dùng để xuất thông tin từ máy tính ra bên ngoài như màn hình, máy in, loa,…</li><li>Cách nhận biết: xét <b>chiều đi của thông tin</b> so với máy tính.</li></ul>"},
   c2:{t:"Ghi nhớ", b:"<ul><li>Thiết bị vào được dùng để nhập thông tin vào máy tính.</li><li>Thiết bị ra xuất thông tin từ máy tính ra để con người nhận biết được.</li><li>Các thiết bị vào – ra có nhiều loại, có những công dụng và hình dạng khác nhau. Một số thiết bị vào – ra còn thực hiện cả chức năng lưu trữ, xử lí dữ liệu.</li></ul>"},
   c3:{t:"Chốt kiến thức", b:"<ul><li>Đầu nối tai nghe (e) cắm vào cổng <b>4</b>. Cắm nhầm sang cổng 5 sẽ không nghe thấy âm thanh, em có thể tưởng thiết bị bị hỏng.</li><li>Dây màn hình (d) cắm vào cổng <b>3</b>. Cố cắm vào cổng khác có thể làm hỏng đầu nối.</li><li>Cổng <b>7</b> là cổng USB dùng cho nhiều thiết bị như bàn phím, chuột. Cắm nhầm đầu nối khác có thể gây chập điện, hỏng thiết bị.</li><li>Dây nguồn (f) cắm vào cổng <b>8</b>; chỉ cấp nguồn <b>sau khi</b> các thiết bị đã được kết nối.</li></ul>"},
-  c4:{t:"Ghi nhớ", b:"<ul><li>Đọc kĩ hướng dẫn của nhà sản xuất trước khi sử dụng thiết bị.</li><li>Kết nối các thiết bị đúng cách.</li><li>Giữ gìn nơi làm việc với máy tính gọn gàng, ngăn nắp, vệ sinh, khô ráo.</li></ul>"}
+  c4:{t:"Ghi nhớ", b:"<ul><li>Đọc kĩ hướng dẫn của nhà sản xuất trước khi sử dụng thiết bị.</li><li>Kết nối các thiết bị đúng cách.</li><li>Giữ gìn nơi làm việc với máy tính gọn gàng, ngăn nắp, vệ sinh, khô ráo.</li></ul>"},
+
+  /* ---- GHI BÀI: nội dung ngắn gọn để học sinh chép vào vở, chốt ở cuối mỗi phần ---- */
+  g1:{ghi:true, t:"Ghi bài", b:'<p class="gh">Mở đầu</p><ul>'
+    + "<li>Máy tính có 4 thành phần cơ bản: <b>thiết bị vào, thiết bị ra, bộ xử lí, bộ nhớ</b>.</li>"
+    + "<li>Thiết bị vào – ra giúp máy tính <b>trao đổi dữ liệu với thế giới bên ngoài</b>.</li></ul>"},
+  g2:{ghi:true, t:"Ghi bài", b:'<p class="gh">1. Thiết bị vào – ra</p><ul>'
+    + "<li><b>Thiết bị vào</b>: nhập thông tin vào máy tính. Ví dụ: bàn phím, chuột, micro, máy quét, webcam, camera.</li>"
+    + "<li><b>Thiết bị ra</b>: xuất thông tin từ máy tính ra ngoài. Ví dụ: màn hình, máy in, loa, tai nghe, máy chiếu.</li>"
+    + "<li>Có thiết bị <b>vừa vào vừa ra</b>: màn hình cảm ứng, tai nghe có gắn micro.</li>"
+    + "<li>Cách nhận biết: xét <b>chiều đi của thông tin</b> so với máy tính.</li>"
+    + "<li>Một số thiết bị vào – ra còn <b>lưu trữ, xử lí</b> dữ liệu (máy ghi hình kĩ thuật số, loa thông minh).</li></ul>"},
+  g3:{ghi:true, t:"Ghi bài", b:'<p class="gh">2. Sử dụng thiết bị an toàn</p><ul>'
+    + "<li>Đọc kĩ hướng dẫn trước khi sử dụng; kết nối thiết bị <b>đúng cổng</b>; cắm nguồn điện <b>sau cùng</b>.</li>"
+    + "<li>Tắt máy bằng lệnh <b>Shut down</b>, không ngắt điện đột ngột.</li>"
+    + "<li>Không ăn uống khi dùng máy; giữ tay khô, sạch; gõ phím nhẹ nhàng; không dùng vật sắc nhọn lên màn hình.</li>"
+    + "<li>Rút điện trước khi lau dọn; giữ nơi làm việc gọn gàng, sạch sẽ, khô ráo.</li></ul>"},
+  g4:{ghi:true, t:"Ghi bài", b:'<p class="gh">Luyện tập</p><ul>'
+    + "<li><b>Câu 1.</b> Tai nghe có gắn micro là thiết bị <b>vừa vào vừa ra</b>.</li>"
+    + "<li><b>Câu 2.</b> Tắt máy an toàn: lưu tệp → đóng tệp → ngắt kết nối thẻ nhớ an toàn → Shut down (<b>d → b → c → a</b>).</li></ul>"},
+  g5:{ghi:true, t:"Ghi bài", b:'<p class="gh">Vận dụng</p><ul>'
+    + "<li>Camera an ninh là thiết bị vào: chỉ thu hình, không báo cho người đứng trước biết đang bị theo dõi.</li>"
+    + "<li>Máy in in sai do virus thì diệt virus <b>trên máy tính</b>, vì máy in chỉ in theo dữ liệu máy tính gửi tới.</li>"
+    + "<li>Phòng máy: không mang đồ ăn uống; không tự ý cắm, rút thiết bị; tắt máy đúng cách; báo thầy cô khi có sự cố.</li></ul>"}
 };
 const TASK_IDS = Object.keys(TASKS);
 const L = ["A","B","C","D"];
@@ -172,22 +195,34 @@ function autoComment(id, d){
 /* Tiến trình bài học theo 4 bước của kế hoạch bài dạy (CV 5512) */
 const STAGES = [
   {id:"mo-dau", code:"1", step:"Bước 1", title:"Khởi động", acts:[
-    {title:"Nhớ lại kiến thức lớp 6", tasks:["kd1"]}]},
+    {title:"Nhớ lại kiến thức lớp 6", tasks:["kd1"]},
+    {title:"Ghi bài", tasks:[], concept:"g1", ghi:true}]},
   {id:"phan-1", code:"2.1", step:"Bước 2 · Hình thành kiến thức mới", title:"Thiết bị vào – ra", acts:[
     {title:"Hoạt động 1: Micro và loa", tasks:["h1a","h1b","h1c"], concept:"c1"},
     {title:"Hoạt động 2: Sự đa dạng của thiết bị", tasks:["h2a","h2b","h2c","h2d"]},
     {title:"Thảo luận: Xếp thiết bị vào nhóm", tasks:["sortDev"]},
     {title:"Đọc hiểu: Lưu trữ, xử lí dữ liệu", tasks:["h2e"], concept:"c2"},
-    {title:"Câu hỏi SGK trang 7", tasks:["p7a","p7b"]}]},
+    {title:"Câu hỏi SGK trang 7", tasks:["p7a","p7b"]},
+    {title:"Ghi bài: Thiết bị vào – ra", tasks:[], concept:"g2", ghi:true}]},
   {id:"phan-2", code:"2.2", step:"Bước 2 · Hình thành kiến thức mới", title:"An toàn thiết bị", acts:[
     {title:"Hoạt động 3: Kết nối thiết bị", tasks:["h3a","h3b"], concept:"c3"},
     {title:"Thảo luận: Nên / Không nên", tasks:["sortSafe"], concept:"c4"},
-    {title:"Câu hỏi SGK trang 9", tasks:["p9a","p9b"]}]},
+    {title:"Câu hỏi SGK trang 9", tasks:["p9a","p9b"]},
+    {title:"Ghi bài: An toàn thiết bị", tasks:[], concept:"g3", ghi:true}]},
   {id:"luyen-tap", code:"3", step:"Bước 3", title:"Luyện tập", acts:[
-    {title:"Bài tập SGK trang 9", tasks:["lt1","lt2"]}]},
+    {title:"Bài tập SGK trang 9", tasks:["lt1","lt2"]},
+    {title:"Ghi bài", tasks:[], concept:"g4", ghi:true}]},
   {id:"van-dung", code:"4", step:"Bước 4", title:"Vận dụng", acts:[
-    {title:"Liên hệ thực tế", tasks:["vd1","vd2","vd3"]}]}
+    {title:"Liên hệ thực tế", tasks:["vd1","vd2","vd3"]},
+    {title:"Ghi bài", tasks:[], concept:"g5", ghi:true}]}
 ];
-STAGES.forEach(st => st.acts.forEach((a, i) => { a.code = st.acts.length > 1 ? st.code + "." + (i + 1) : st.code; a.id = "hd-" + a.code.replace(/\./g, "-"); }));
-window.LESSON = {STAGES, id: "tin7-bai1", title: "Bài 1. Thiết bị vào – ra", TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, summary, esc, NX_MAU, NX_CHUNG, autoComment};
+/* Mục "Ghi bài" (ghi:true) ở cuối mỗi bước không làm đổi số thứ tự các hoạt động */
+STAGES.forEach(st => { const real = st.acts.filter(a => !a.ghi);
+  st.acts.forEach(a => {
+    if (a.ghi) { a.code = "✎"; a.id = "ghi-" + st.id; return; }
+    const i = real.indexOf(a);
+    a.code = real.length > 1 ? st.code + "." + (i + 1) : st.code; a.id = "hd-" + a.code.replace(/\./g, "-"); }); });
+window.LESSON = {STAGES, id: "tin7-bai1", title: "Bài 1. Thiết bị vào – ra", TASKS, CONCEPTS, TASK_IDS, L, grade, countSub, summary, esc, NX_MAU, NX_CHUNG, autoComment,
+  notePh: "Ví dụ: Nhóm 2 nhầm máy chiếu là thiết bị vào vì…",
+  commentPh: "Ví dụ: Nhóm đã nêu đúng micro là thiết bị vào; cần giải thích thêm vì sao loa là thiết bị ra."};
 })();

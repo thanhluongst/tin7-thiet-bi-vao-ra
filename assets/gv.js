@@ -59,12 +59,13 @@ async function start(){
   await loadLesson();
   $("outline").hidden = false;
   if (!outline && lessonReady) outline = window.Outline.mount({
-    root: $("lesson"), aside: $("outline"), title: "Tiến trình lớp học", pagerHost: $("app"), storeKey: "focus-gv",
+    root: $("lesson"), aside: $("outline"), title: "Tiến trình lớp học", pagerHost: $("app"), storeKey: "focus-gv-" + window.LESSON.id,
     extras: [{id: "chia-se", code: "QR", title: "Mã QR, link cho học sinh"}, {id: "tien-do", code: "▦", title: "Tiến độ các nhóm"}],
-    progress: a => { const n = DOCS.length, total = n * a.tasks.length;
+    progress: a => { if (!a.tasks.length) return {done: 0, total: 0, label: ""};
+      const n = DOCS.length, total = n * a.tasks.length;
       const done = DOCS.reduce((s, d) => s + a.tasks.filter(t => d.sub && d.sub[t]).length, 0);
       return {done, total, label: n ? done + "/" + total : "–"}; },
-    chot: a => a.tasks.every(t => REV[t])
+    chot: a => a.tasks.length ? a.tasks.every(t => REV[t]) : !!REV[a.concept]
   });
   try { REV = await API.getReveal(BAI, BUOI); } catch(e) { setSync("Chưa tải được phần chốt: " + e.message); }
   renderAll();
@@ -104,8 +105,8 @@ function buildTaskPanel(slot){
   slot.appendChild(el("p", {class:"q-text"}, (slot.dataset.n ? '<span class="n">' + slot.dataset.n + '.</span>' : "") + esc(t.q)));
   if (t.type === "mcq") slot.appendChild(el("p", {class:"status"}, t.o.map((o, i) => "<b>" + L[i] + ".</b> " + esc(o)).join(" &nbsp; ")));
   if (t.type === "order") slot.appendChild(el("p", {class:"status"}, Object.keys(t.items).map(k => "<b>" + k + ")</b> " + esc(t.items[k])).join("<br>")));
-  if (t.type === "match") slot.appendChild(el("p", {class:"status"}, t.items.map(x => esc(x[0])).join(" · ")));
-  if (t.type === "sort") slot.appendChild(el("p", {class:"status"}, "Thiết bị/việc cần xếp: " + t.items.map(x => esc(x[0])).join(", ")));
+  if (t.type === "match") slot.appendChild(el("p", {class:"status"}, t.items.map(x => esc(x[0])).join(" · ") + (t.opts ? "<br>Lựa chọn: " + t.opts.map(esc).join(" · ") : "")));
+  if (t.type === "sort") slot.appendChild(el("p", {class:"status"}, "Cần xếp: " + t.items.map(x => esc(x[0])).join(", ")));
   const det = el("details", {class:"key-det"});
   det.appendChild(el("summary", null, "Đáp án / phần chốt"));
   det.appendChild(el("div", {class:"key-inline"}, (t.type === "mcq" ? "Đáp án đúng: <b>" + L[t.a] + "</b>. " : "") + t.k));
@@ -127,7 +128,7 @@ function buildConceptPanel(slot){
   const id = slot.dataset.concept, d = CONCEPTS[id];
   slot.className = "concept-wrap";
   const b = el("button", {class:"btn keybtn", type:"button"});
-  const box = el("div", {class:"concept"}, "<h3>" + d.t + "</h3>" + d.b);
+  const box = el("div", {class: d.ghi ? "concept ghi" : "concept"}, "<h3>" + d.t + "</h3>" + d.b);
   slot.append(b, box);
   b.addEventListener("click", () => toggleRev(id));
   CPANELS[id] = {b, box, t: d.t};
@@ -151,7 +152,7 @@ function makeItem(id, d){
   const fb = el("div", {class:"fb-edit"});
   const taId = "nx-" + id + "-" + d.clientId;
   const lab = el("label", {for: taId, class:"status"}, "Nhận xét gửi cho nhóm");
-  const ta = el("textarea", {id: taId, rows:"2", placeholder:"Ví dụ: Nhóm đã nêu đúng micro là thiết bị vào; cần giải thích thêm vì sao loa là thiết bị ra."});
+  const ta = el("textarea", {id: taId, rows:"2", placeholder: window.LESSON.commentPh || "Nhận xét gửi cho nhóm…"});
   const chips = el("div", {class:"nx-chips"});
   chips.addEventListener("click", e => {
     const c = e.target.closest("[data-nx]"); if (!c) return;

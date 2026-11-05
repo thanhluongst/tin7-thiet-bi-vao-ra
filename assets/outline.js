@@ -20,7 +20,8 @@ function mount(opts){
 
   /* 1. Gắn mã số và id cho từng hoạt động trong nội dung bài */
   STAGES.forEach(st => st.acts.forEach(a => {
-    const slot = root.querySelector('[data-task="' + a.tasks[0] + '"]');
+    // hoạt động có câu hỏi: tìm theo câu đầu tiên; mục "Ghi bài": tìm theo khung chốt
+    const slot = root.querySelector(a.tasks.length ? '[data-task="' + a.tasks[0] + '"]' : '[data-concept="' + a.concept + '"]');
     const act = slot && slot.closest(".act");
     if (!act) return;
     act.id = a.id; act.setAttribute("data-code", a.code);
@@ -51,7 +52,7 @@ function mount(opts){
     li.appendChild(el("a", {href: "#" + st.id, class: "ol-st"}, '<span class="sn">' + st.code + "</span> " + esc(st.title)));
     const acts = el("ol", {class: "ol-acts"});
     st.acts.forEach(a => {
-      const ai = el("li", {"data-act": a.id, "data-unit": a.id});
+      const ai = el("li", {"data-act": a.id, "data-unit": a.id, class: a.ghi ? "ghi" : ""});
       const link = el("a", {href: "#" + a.id}, '<span class="sn">' + a.code + '</span><span class="t">' + esc(a.title) + '</span><span class="cnt"></span>');
       const bar = el("span", {class: "bar", "aria-hidden": "true"}, "<i></i>");
       ai.append(link, bar); acts.appendChild(ai);

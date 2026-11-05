@@ -429,3 +429,35 @@ details.ol{border-color:var(--accent);border-width:1.5px}
 .q .opt.sel.wrong{background:var(--bad);border-color:var(--bad);color:var(--accent-ink);box-shadow:0 0 0 4px var(--bad-soft)}
 .q .opt.sel.wrong .l{background:var(--accent-ink);color:var(--bad)}
 .q .opt.sel.wrong::after{content:"✗ Em chọn"}
+
+/* ===== GHI BÀI: khung như trang vở kẻ dòng để học sinh chép ===== */
+:root{
+  --i-pen:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23e8f6f4' stroke='%2300877d' stroke-width='2'/%3E%3Cpath d='M12 28l1.6-5.4L25 11.2a2.4 2.4 0 0 1 3.4 0l.4.4a2.4 2.4 0 0 1 0 3.4L17.4 26.4z' fill='%23fff' stroke='%2300877d' stroke-width='1.8' stroke-linejoin='round'/%3E%3Cpath d='M23.2 13l3.8 3.8M13.6 22.6l3.8 3.8' stroke='%2300877d' stroke-width='1.6'/%3E%3Cpath d='M12 31h16' stroke='%23d0186e' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+  --vo-line:#cfe0f0; --vo-margin:#f3a3c4; --vo-paper:#fffef8;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--vo-line:#24384a;--vo-margin:#6b2a4b;--vo-paper:#111b1a}}
+:root[data-theme="dark"]{--vo-line:#24384a;--vo-margin:#6b2a4b;--vo-paper:#111b1a}
+
+.act-ghi{border-style:dashed;background:color-mix(in srgb,var(--accent-soft) 35%,var(--surface))}
+.act-ghi .reading{background-image:var(--i-pen)}
+.concept.ghi{--lh:30px;border-radius:6px 18px 18px 6px;padding:10px 18px 14px 64px;line-height:var(--lh);color:var(--fg);
+  background-color:var(--vo-paper);
+  background-image:linear-gradient(90deg,transparent 46px,var(--vo-margin) 46px,var(--vo-margin) 48px,transparent 48px),
+                   repeating-linear-gradient(180deg,transparent 0 calc(var(--lh) - 1px),var(--vo-line) calc(var(--lh) - 1px) var(--lh));
+  background-position:0 0,0 10px;
+  box-shadow:0 1px 0 var(--line),0 3px 10px rgba(0,0,0,.06);border:1px solid var(--line)}
+.concept.ghi::before{left:6px;top:8px;width:34px;height:34px;background-image:var(--i-pen)}
+.concept.ghi h3{color:var(--accent);font-size:13px;letter-spacing:.08em;line-height:var(--lh)}
+.concept.ghi .gh{font-family:var(--font-display);font-weight:700;color:var(--pink);font-size:17px;text-transform:uppercase}
+.concept.ghi p,.concept.ghi ul{margin:0}
+.concept.ghi ul{display:block;padding-left:20px}
+.concept.ghi li::marker{color:var(--accent)}
+.concept.ghi b{color:var(--fg)}
+@media (max-width:480px){.concept.ghi{padding:10px 12px 12px 30px;background-image:linear-gradient(90deg,transparent 18px,var(--vo-margin) 18px,var(--vo-margin) 20px,transparent 20px),repeating-linear-gradient(180deg,transparent 0 calc(var(--lh) - 1px),var(--vo-line) calc(var(--lh) - 1px) var(--lh))}
+  .concept.ghi::before{display:none}}
+.ol-acts li.ghi a{font-style:italic}
+.ol-acts li.ghi .sn{color:var(--pink)}
+.ol-acts li.ghi .bar{display:none}
+@media print{
+  header.hero,nav.toc,.outline,.pager,footer.foot,.q,.act-tag .code{display:none!important}
+}

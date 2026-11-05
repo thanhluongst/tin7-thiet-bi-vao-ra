@@ -66,7 +66,7 @@ function keyBox(id, html){
   const n = el("div", {class:"note"});
   const lid = "note-" + id;
   n.appendChild(el("label", {for:lid}, "Nhận xét của giáo viên (ghi trên máy đang trình chiếu)"));
-  const ta = el("textarea", {id:lid, placeholder:"Ví dụ: Nhóm 2 nhầm máy chiếu là thiết bị vào vì…"});
+  const ta = el("textarea", {id:lid, placeholder: window.LESSON.notePh || "Ghi nhận xét…"});
   ta.addEventListener("input", () => { S.note[noteKey(id)] = ta.value; saveLocal(); });
   n.appendChild(ta); box.appendChild(n);
   const sync = () => { if (document.activeElement !== ta) ta.value = S.note[noteKey(id)] || ""; };
@@ -110,11 +110,12 @@ const BODY = {
   },
   match(id, t){
     if (!S.match[id]) S.match[id] = {};
-    const grid = el("div", {class:"match"});
+    const grid = el("div", {class: t.opts ? "match wide" : "match"});
     const items = t.items.map(([name], i) => { const sid = "m-" + id + "-" + i;
       const lab = el("label", {for:sid}, "<span>" + esc(name) + "</span>");
-      const sel = el("select", {id:sid}); sel.appendChild(el("option", {value:""}, "Cổng…"));
-      for (let p = 1; p <= 8; p++) sel.appendChild(el("option", {value:String(p)}, String(p)));
+      const sel = el("select", {id:sid}); sel.appendChild(el("option", {value:""}, t.ph || "Cổng…"));
+      const opts = t.opts || [1,2,3,4,5,6,7,8].map(String);
+      opts.forEach((o, k) => sel.appendChild(el("option", {value:String(k + 1)}, esc(o))));
       sel.addEventListener("change", () => { (S.match[id] = S.match[id] || {})[i] = sel.value; changed(); renderAll(); });
       lab.appendChild(sel); grid.appendChild(lab); return {lab, sel}; });
     return {node: grid, has: () => Object.values(S.match[id] || {}).some(Boolean), render(sub, rev){
@@ -201,7 +202,7 @@ document.querySelectorAll("[data-concept]").forEach(slot => {
   slot.className = "concept-wrap";
   const b = el("button", {class:"btn keybtn", type:"button"});
   const wait = el("p", {class:"wait"}, d.t + " sẽ được thầy cô chốt sau khi cả lớp trình bày.");
-  const box = el("div", {class:"concept"}, "<h3>" + d.t + "</h3>" + d.b);
+  const box = el("div", {class: d.ghi ? "concept ghi" : "concept"}, "<h3>" + d.t + "</h3>" + d.b);
   slot.append(b, wait, box);
   renders.push(() => { const rev = isRev(id), T = isTeacher();
     box.hidden = !rev; wait.hidden = rev || T; b.hidden = !T;
@@ -420,9 +421,9 @@ if (API.demo) {
   if (lead) lead.innerHTML = "Chọn đúng <b>nhóm</b> của em, quan sát hình, trả lời từng câu hỏi trong sách giáo khoa rồi bấm <b>Nộp câu trả lời</b>. Sau khi các nhóm trình bày, thầy cô nhận xét và <b>chốt kiến thức</b>.";
 }
 outline = window.Outline.mount({
-  root: document.querySelector("main"), aside: $("outline"), pagerHost: document.querySelector("main .wrap"), storeKey: "focus-hs",
-  progress: a => ({done: a.tasks.filter(t => S.sub[t]).length, total: a.tasks.length}),
-  chot: a => a.tasks.every(t => isRev(t))
+  root: document.querySelector("main"), aside: $("outline"), pagerHost: document.querySelector("main .wrap"), storeKey: "focus-hs-" + window.LESSON.id,
+  progress: a => a.tasks.length ? {done: a.tasks.filter(t => S.sub[t]).length, total: a.tasks.length} : {done: 0, total: 0, label: ""},
+  chot: a => a.tasks.length ? a.tasks.every(t => isRev(t)) : isRev(a.concept)
 });
 renderAll();
 if (S.session && String(S.active).indexOf("on:") === 0) {
