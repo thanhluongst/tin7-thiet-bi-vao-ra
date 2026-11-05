@@ -461,3 +461,35 @@ details.ol{border-color:var(--accent);border-width:1.5px}
 @media print{
   header.hero,nav.toc,.outline,.pager,footer.foot,.q,.act-tag .code{display:none!important}
 }
+
+/* ===== CHIẾU GHI BÀI (máy chiếu) ===== */
+html.chieu-on,html.chieu-on body{overflow:hidden}
+.chieu{position:fixed;inset:0;z-index:200;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:var(--bg);color:var(--fg)}
+.chieu-top{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:12px clamp(16px,3vw,40px);background:var(--accent);color:var(--accent-ink);font-family:var(--font-display);font-weight:700}
+.chieu-bai{font-size:clamp(14px,1.6vw,20px);opacity:.9}
+.chieu-part{font-size:clamp(18px,2.4vw,30px);text-transform:uppercase;color:var(--pink-ink);flex:1;min-width:0}
+.chieu-n{font-size:clamp(14px,1.6vw,20px);font-variant-numeric:tabular-nums;opacity:.9}
+.chieu-body{overflow:auto;padding:clamp(12px,2.5vw,32px) clamp(12px,3vw,48px)}
+.chieu .chieu-page{--lh:1.65em;font-size:var(--fs,32px);max-width:1400px;margin:0 auto;min-height:100%;
+  padding:.35em .8em .6em 3.2em;border-radius:8px 24px 24px 8px;
+  background-image:linear-gradient(90deg,transparent 2.3em,var(--vo-margin) 2.3em,var(--vo-margin) calc(2.3em + 3px),transparent calc(2.3em + 3px)),
+                   repeating-linear-gradient(180deg,transparent 0 calc(var(--lh) - 2px),var(--vo-line) calc(var(--lh) - 2px) var(--lh));
+  background-position:0 0,0 .35em}
+.chieu .chieu-page::before{display:none}
+.chieu .chieu-page .gh{font-size:1.15em;margin-top:.2em}
+.chieu .chieu-page .gh:not(:first-child){margin-top:var(--lh)}
+.chieu .chieu-page ul{padding-left:1.1em}
+.chieu-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:10px 16px;background:var(--surface);border-top:3px solid var(--pink)}
+.chieu-bar .btn{font-size:16px;padding:8px 16px}
+.chieu-sp{flex:0 1 24px}
+.chieu-dots{display:flex;gap:6px}
+.chieu-dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--accent);background:var(--surface);color:var(--accent);font-weight:700;font-size:14px}
+.chieu-dot[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
+.chieu:fullscreen{background:var(--bg)}
+@media (max-width:640px){.chieu .chieu-page{padding-left:1.4em;background-image:linear-gradient(90deg,transparent .7em,var(--vo-margin) .7em,var(--vo-margin) calc(.7em + 2px),transparent calc(.7em + 2px)),repeating-linear-gradient(180deg,transparent 0 calc(var(--lh) - 2px),var(--vo-line) calc(var(--lh) - 2px) var(--lh))}
+  .chieu-sp{display:none}}
+.btn.chieu-btn{display:inline-flex;gap:6px;align-items:center;border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.concept-wrap .btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.concept-wrap .btn-row .btn{flex:1 1 200px}
+.chieu .chieu-page .gh{line-height:calc(var(--lh) / 1.15);margin-top:0}
+.chieu .chieu-page .gh:not(:first-child){margin-top:calc(var(--lh) / 1.15)}

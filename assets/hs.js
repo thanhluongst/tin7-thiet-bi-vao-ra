@@ -203,9 +203,16 @@ document.querySelectorAll("[data-concept]").forEach(slot => {
   const b = el("button", {class:"btn keybtn", type:"button"});
   const wait = el("p", {class:"wait"}, d.t + " sẽ được thầy cô chốt sau khi cả lớp trình bày.");
   const box = el("div", {class: d.ghi ? "concept ghi" : "concept"}, "<h3>" + d.t + "</h3>" + d.b);
-  slot.append(b, wait, box);
+  // mục Ghi bài: thêm nút chiếu lên màn hình lớn cho học sinh chép
+  const row = el("div", {class:"btn-row"}); row.appendChild(b);
+  if (d.ghi && window.Chieu) {
+    const pj = el("button", {class:"btn chieu-btn", type:"button"}, '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/></svg>Chiếu ghi bài');
+    pj.addEventListener("click", () => window.Chieu.open(id, {onShow: k => { if (!isRev(k)) setRev(k, true); }}));
+    row.appendChild(pj);
+  }
+  slot.append(row, wait, box);
   renders.push(() => { const rev = isRev(id), T = isTeacher();
-    box.hidden = !rev; wait.hidden = rev || T; b.hidden = !T;
+    box.hidden = !rev; wait.hidden = rev || T; row.hidden = !T;
     b.textContent = rev ? "Ẩn " + d.t.toLowerCase() : "GV chốt " + d.t.toLowerCase(); });
   b.addEventListener("click", () => setRev(id, !isRev(id)));
 });
@@ -230,6 +237,7 @@ function updateModeUI(){
   $("pin-box").hidden = mode !== "local" || T;
   $("t-exit").hidden = !(mode === "local" && T);
   $("reveal-all").hidden = !T; $("hide-all").hidden = !T;
+  if ($("chieu-all")) $("chieu-all").hidden = !T || !window.Chieu || !window.Chieu.parts.length;
   $("theo-doi").hidden = !dashOn(); $("toc-dash").hidden = !dashOn();
   $("group-bar").hidden = !groupsOn();
   $("name-label").textContent = groupsOn() ? "Tên nhóm / học sinh:" : "Họ tên / Nhóm:";
@@ -272,6 +280,7 @@ function setAll(v){
   renderAll();
 }
 $("reveal-all").addEventListener("click", () => setAll(true));
+if ($("chieu-all")) $("chieu-all").addEventListener("click", () => window.Chieu.open(null, {onShow: k => { if (!isRev(k)) setRev(k, true); }}));
 $("hide-all").addEventListener("click", () => setAll(false));
 
 /* làm lại */

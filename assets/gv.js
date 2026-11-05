@@ -129,7 +129,13 @@ function buildConceptPanel(slot){
   slot.className = "concept-wrap";
   const b = el("button", {class:"btn keybtn", type:"button"});
   const box = el("div", {class: d.ghi ? "concept ghi" : "concept"}, "<h3>" + d.t + "</h3>" + d.b);
-  slot.append(b, box);
+  const row = el("div", {class:"btn-row"}); row.appendChild(b);
+  if (d.ghi && window.Chieu) {
+    const pj = el("button", {class:"btn chieu-btn", type:"button"}, '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/></svg>Chiếu ghi bài');
+    pj.addEventListener("click", () => window.Chieu.open(id, {onShow: chotGhi}));
+    row.appendChild(pj);
+  }
+  slot.append(row, box);
   b.addEventListener("click", () => toggleRev(id));
   CPANELS[id] = {b, box, t: d.t};
 }
@@ -372,6 +378,9 @@ async function pushRev(){
 function toggleRev(id){ REV = Object.assign({}, REV, {[id]: !REV[id]}); TASK_IDS.forEach(renderPanel); renderConcepts(); if (outline) outline.update(); pushRev(); }
 function setAll(v){ const n = {}; ALL_REV.forEach(k => n[k] = v); REV = n; TASK_IDS.forEach(renderPanel); renderConcepts(); if (outline) outline.update(); pushRev(); }
 $("rev-all").addEventListener("click", () => setAll(true));
+/* Chiếu ghi bài: phần nào được chiếu thì chốt luôn cho cả lớp */
+function chotGhi(k){ if (!REV[k]) toggleRev(k); }
+if ($("chieu-all")) $("chieu-all").addEventListener("click", () => window.Chieu.open(null, {onShow: chotGhi}));
 $("rev-none").addEventListener("click", () => setAll(false));
 
 /* ================= CSV ================= */
